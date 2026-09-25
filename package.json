@@ -1,0 +1,10 @@
+{
+  "name": "cuci-mobil-panggilan",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node src/build.mjs",
+    "preview": "node src/build.mjs && npx --yes serve dist"
+  }
+}
