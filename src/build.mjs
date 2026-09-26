@@ -3,7 +3,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { icon, heroArt } from './icons.mjs';
-import { detailPages, processAll, faq, posts } from './content.mjs';
+import { detailPages, processAll, faq, posts as basePosts } from './content.mjs';
+import { areas, extraPosts } from './seo.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(ROOT, 'dist');
@@ -22,6 +23,7 @@ const waKonsul = wa(`Halo ${c.brand}, saya ingin konsultasi soal cuci/salon mobi
 const minOf = (arr) => Math.min(...arr);
 const detail = Object.fromEntries(H.detailing.map((d) => [d.id, d]));
 const SIZES = c.ukuran.slice(0, 3);
+const posts = [...extraPosts(c, rp), ...basePosts];
 
 // ---------- layout ----------
 const NAV = [
@@ -69,6 +71,7 @@ function footer() {
     <li><a href="${u('paket-banjir/')}">Paket Banjir</a></li></ul></div>
   <div><h4>Informasi</h4><ul>
     <li><a href="${u('harga/')}">Daftar Harga</a></li>
+    <li><a href="${u('area/')}">Area Layanan</a></li>
     <li><a href="${u('faq/')}">FAQ</a></li>
     <li><a href="${u('blog/')}">Blog</a></li>
     <li><a href="${u('tentang-kami/')}">Tentang Kami</a></li>
@@ -211,7 +214,7 @@ const testimoniBlock = () => (c.testimoni && c.testimoni.length ? `
 const areaBlock = `<section class="section"><div class="container center">
   <span class="eyebrow">Area layanan</span><h2>Kami melayani ${esc(c.area.length)} wilayah</h2>
   <p class="lead">Tim kami siap datang ke rumah, kantor, atau apartemen Anda di:</p>
-  <div class="chips mt24">${c.area.map((a) => `<span>${icon.pin(14).replace('<svg', '<svg style="display:inline;vertical-align:-2px"')} ${esc(a)}</span>`).join('')}</div>
+  <div class="chips mt24">${c.area.map((a) => { const ar = areas.find((x) => x.nama === a); const pin = icon.pin(14).replace('<svg', '<svg style="display:inline;vertical-align:-2px"'); return ar ? `<a href="${u(ar.slug + '/')}">${pin} ${esc(a)}</a>` : `<span>${pin} ${esc(a)}</span>`; }).join('')}</div>
 </div></section>`;
 
 // ---------- HALAMAN ----------
@@ -230,13 +233,13 @@ const services = [
 
 page({
   file: 'index.html',
-  title: `Cuci & Salon Mobil Panggilan ${c.area.includes('Bekasi') ? 'Jabodetabek' : ''} – Harga Hemat, Bergaransi | ${c.brand}`.replace('  ', ' '),
-  desc: `Jasa cuci mobil & salon mobil panggilan ke rumah. Cuci berlangganan mulai ${rp(H.langganan[0].harga)}/bulan, sekali cuci ${rp(H.sekaliCuci[0].harga)}. Garansi cuci ulang ${c.garansiJam} jam, bayar setelah selesai.`,
+  title: `Cuci Mobil Panggilan & Salon Mobil ke Rumah – Jakarta, Bekasi, Depok, Tangerang | ${c.brand}`,
+  desc: `Jasa cuci mobil panggilan, salon mobil & poles mobil ke rumah di Jabodetabek. Cuci berlangganan mulai ${rp(H.langganan[0].harga)}/bulan, sekali cuci ${rp(H.sekaliCuci[0].harga)}. Garansi cuci ulang ${c.garansiJam} jam, bayar setelah selesai.`,
   body: `
 <section class="hero"><div class="container hero-grid">
   <div>
     <span class="badge">${icon.shield(16)} Bayar setelah selesai · Garansi cuci ulang</span>
-    <h1>Cuci & Salon Mobil Panggilan, Datang ke Rumah Anda</h1>
+    <h1>Cuci Mobil Panggilan & Salon Mobil, Datang ke Rumah Anda</h1>
     <p class="lead">Tidak perlu antre di car wash. Tim ${esc(c.brand)} datang membawa peralatan & produk lengkap — Anda cukup menyiapkan air dan menunggu mobil kinclong.</p>
     <ul class="steps-inline"><li>Pesan</li><li>Kami datang</li><li>Mobil bersih</li></ul>
     <div class="hero-actions"><a class="btn btn-primary" href="${u('pesan/')}">Atur Jadwal Sekarang</a><a class="btn btn-outline" href="${u('harga/')}">Lihat Harga</a></div>
@@ -350,7 +353,7 @@ ${ctaBand()}`,
   const satuan = SIZES.map((_, i) => ['interior', 'exterior', 'kaca', 'mesin', 'ban'].reduce((a, k) => a + detail[k].harga[i], 0));
   page({
     file: 'salon-mobil/index.html', cur: 'salon-mobil/',
-    title: 'Salon Mobil Panggilan – Complete Detailing di Rumah',
+    title: 'Salon Mobil Panggilan Terdekat – Complete Detailing di Rumah',
     desc: `${p.meta} Mulai ${rp(d.harga[0])}.`,
     body: `${pageHero({ crumb: 'Salon Mobil', eyebrow: 'Complete detailing', h1: p.h1, sub: p.sub, benefits: p.benefits, ctaHref: 'pesan/?layanan=detailing&paket=complete' })}
 <section class="section"><div class="container">
@@ -406,7 +409,7 @@ ${ctaBand('Mobil terendam? Hubungi kami sekarang', 'Semakin cepat ditangani, sem
   const detailPanel = (id) => `<div class="tab-panel" id="${id}"><h2>${esc(detail[id].nama)}</h2>${sizeTable(detail[id])}</div>`;
   page({
     file: 'harga/index.html', cur: 'harga/',
-    title: 'Daftar Harga Cuci & Salon Mobil Panggilan',
+    title: 'Harga Cuci Mobil Panggilan, Poles & Salon Mobil 2026',
     desc: `Daftar harga lengkap ${c.brand}: cuci berlangganan mulai ${rp(H.langganan[0].harga)}/bulan, sekali cuci ${rp(H.sekaliCuci[0].harga)}, detailing, dan paket banjir.`,
     body: `${pageHero({ crumb: 'Harga', eyebrow: 'Harga transparan', h1: `Daftar Harga ${c.brand}`, sub: 'Semua harga sudah termasuk tenaga, produk, peralatan, dan transport dalam area layanan. Bayar setelah pekerjaan selesai.', cta: false })}
 <section class="section"><div class="container">
@@ -558,6 +561,56 @@ for (const p of posts) {
 </aside>
 </div></section>
 <section class="section soft"><div class="container"><h2 class="center">Cari tahu ukuran mobil Anda</h2><div class="grid g4 mt24">${c.ukuran.map((s) => `<div class="card"><h3>${esc(s.nama)}</h3><p class="muted mb0">${esc(s.contoh)}</p></div>`).join('')}</div></div></section>`,
+  });
+}
+
+// Halaman per wilayah (SEO lokal)
+{
+  const areaService = [
+    ['Cuci mobil panggilan', `mulai ${rp(H.sekaliCuci[0].harga)}`, 'sekali-cuci/'],
+    ['Cuci berlangganan', `mulai ${rp(H.langganan[0].harga)}/bulan`, 'cuci-berlangganan/'],
+    ['Poles mobil (exterior detailing)', `mulai ${rp(detail.exterior.harga[0])}`, 'exterior/'],
+    ['Cuci interior & jok mobil', `mulai ${rp(detail.interior.harga[0])}`, 'interior/'],
+    ['Salon mobil lengkap', `mulai ${rp(detail.complete.harga[0])}`, 'salon-mobil/'],
+    ['Fogging disinfektan', rp(H.addOn.find((a) => a.id === 'fogging').harga), 'sekali-cuci/'],
+  ];
+  const areaLinks = (except) => `<div class="chips mt24">${areas.filter((a) => a.slug !== except).map((a) => `<a href="${u(a.slug + '/')}">${esc(a.nama)}</a>`).join('')}</div>`;
+  for (const a of areas) {
+    const q = [
+      [`Apakah melayani seluruh ${a.nama}?`, `Ya. Kami melayani ${a.sekitar.join(', ')}, dan wilayah lain di ${a.nama}. Kirim lokasi Anda via WhatsApp untuk konfirmasi jadwal.`],
+      [`Berapa harga cuci mobil panggilan di ${a.nama}?`, `Cuci sekali datang mulai ${rp(H.sekaliCuci[0].harga)}, cuci berlangganan mulai ${rp(H.langganan[0].harga)} per bulan, dan salon mobil lengkap mulai ${rp(detail.complete.harga[0])}. Tidak ada biaya transport tambahan di ${a.nama}.`],
+      ['Apa yang perlu saya siapkan?', 'Cukup sediakan air dan, bila ada, colokan listrik untuk vacuum. Peralatan dan produk kami bawa sendiri.'],
+      ['Bisa dicuci di apartemen?', 'Bisa, selama pengelola apartemen mengizinkan dan menyediakan area cuci.'],
+    ];
+    page({
+      file: `${a.slug}/index.html`, cur: 'area/',
+      title: `Cuci Mobil Panggilan ${a.nama} – Salon & Poles Mobil ke Rumah`,
+      desc: `Jasa cuci mobil panggilan & salon mobil di ${a.nama} (${a.sekitar.slice(0, 4).join(', ')}). Mulai ${rp(H.sekaliCuci[0].harga)}, datang ke rumah, bayar setelah selesai.`,
+      ld: [faqLd(q), { '@context': 'https://schema.org', '@type': 'Service', serviceType: 'Cuci mobil panggilan', provider: { '@type': 'AutoWash', name: c.brand, url: abs() }, areaServed: { '@type': 'City', name: a.nama }, url: abs(a.slug + '/') }],
+      body: `${pageHero({ crumb: `Area / ${a.nama}`, eyebrow: 'Area layanan', h1: `Cuci Mobil Panggilan ${a.nama}`, sub: `Cuci, poles, dan salon mobil di rumah Anda di ${a.nama}. Tim datang membawa peralatan lengkap — Anda cukup menunggu.`, benefits: ['Datang ke rumah', 'Bayar setelah selesai', `Garansi cuci ulang ${c.garansiJam} jam`], ctaHref: 'pesan/' })}
+<section class="section"><div class="container grid g2" style="align-items:start">
+  <div><h2>Jasa cuci mobil ke rumah di ${esc(a.nama)}</h2><p class="lead">${esc(a.intro)}</p>
+  <h3 class="mt24">Wilayah yang kami layani</h3><div class="chips" style="justify-content:flex-start">${a.sekitar.map((s) => `<span>${icon.pin(14).replace('<svg', '<svg style="display:inline;vertical-align:-2px"')} ${esc(s)}</span>`).join('')}</div></div>
+  <div class="card shadow"><h3>Layanan & harga di ${esc(a.nama)}</h3>
+  <table class="size-table area-price" style="border:0"><tbody>${areaService.map(([t, p, h]) => `<tr><td><a href="${u(h)}">${t}</a></td><td class="num">${p}</td></tr>`).join('')}</tbody></table>
+  <a class="btn btn-wa btn-block mt24" href="${wa(`Halo ${c.brand}, saya di ${a.nama}. Saya ingin pesan cuci/salon mobil panggilan.`)}" target="_blank" rel="noopener">${icon.wa(18)} Pesan via WhatsApp</a></div>
+</div></section>
+<section class="section soft"><div class="container">
+  <div class="center"><h2>Kenapa pilih ${esc(c.brand)} di ${esc(a.nama)}</h2></div>
+  <div class="mt40">${featureGrid()}</div>
+</div></section>
+<section class="section"><div class="container" style="max-width:820px"><h2 class="center">Pertanyaan seputar cuci mobil panggilan ${esc(a.nama)}</h2><div class="mt24">${faqBlock(q)}</div></div></section>
+<section class="section soft"><div class="container center"><h2>Area lain yang kami layani</h2>${areaLinks(a.slug)}</div></section>
+${ctaBand(`Pesan cuci mobil panggilan di ${a.nama}`, 'Pilih layanan, atur jadwal, tim kami datang ke lokasi Anda.')}`,
+    });
+  }
+  page({
+    file: 'area/index.html', cur: 'area/',
+    title: 'Area Layanan Cuci Mobil Panggilan Jabodetabek',
+    desc: `Daftar area layanan cuci mobil panggilan & salon mobil ${c.brand}: ${areas.map((a) => a.nama).join(', ')}.`,
+    body: `${pageHero({ crumb: 'Area Layanan', eyebrow: 'Area layanan', h1: 'Area Layanan Cuci Mobil Panggilan', sub: 'Kami datang ke rumah, kantor, atau apartemen Anda di Jabodetabek. Pilih wilayah Anda untuk melihat detail layanan.', cta: false })}
+<section class="section"><div class="container"><div class="grid g3">${areas.map((a) => `<a class="card service-card" href="${u(a.slug + '/')}"><div class="ic">${icon.pin(28)}</div><h3>Cuci Mobil Panggilan ${esc(a.nama)}</h3><p>${esc(a.sekitar.slice(0, 5).join(', '))}, dan sekitarnya.</p><div class="more">Lihat detail →</div></a>`).join('')}</div></div></section>
+${ctaBand()}`,
   });
 }
 
