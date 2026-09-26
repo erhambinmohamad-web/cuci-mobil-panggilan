@@ -65,29 +65,29 @@ export const extraPosts = (c, rp) => {
       slug: 'harga-salon-mobil-dan-poles-mobil-panggilan',
       title: 'Harga Salon Mobil & Poles Mobil Panggilan 2026 (Daftar Lengkap)',
       date: '2026-09-26',
-      excerpt: 'Daftar harga cuci mobil panggilan, poles mobil, salon interior, dan complete detailing per ukuran mobil — plus cara memilih paket yang pas.',
+      excerpt: 'Daftar harga cuci mobil panggilan, poles mobil, salon interior, dan salon lengkap per ukuran mobil, plus cara memilih paket yang pas.',
       body: `
 <p>Sebelum memesan salon mobil atau poles mobil panggilan, wajar kalau Anda ingin tahu kisaran harganya dulu. Berikut daftar harga ${c.brand} yang berlaku untuk area Jabodetabek. Harga sudah termasuk tenaga, produk, peralatan, dan transport.</p>
 <h2>Harga cuci mobil panggilan</h2>
 <ul>
-<li>Cuci sekali datang (Basic): <b>${rp(H.sekaliCuci[0].harga)}</b> — cuci bodi, interior, vacuum, semir ban.</li>
-<li>Paket Standard sampai Elite: <b>${rp(H.sekaliCuci[1].harga)} – ${rp(H.sekaliCuci[3].harga)}</b>.</li>
-<li>Cuci berlangganan: mulai <b>${rp(H.langganan[0].harga)}/bulan</b> untuk 1x cuci per minggu.</li>
+<li>Cuci sekali datang paket ${H.sekaliCuci[0].nama}: <b>${rp(H.sekaliCuci[0].harga)}</b>, berisi ${H.sekaliCuci[0].isi.join(', ').toLowerCase()}.</li>
+<li>Paket ${H.sekaliCuci[1].nama} sampai ${H.sekaliCuci[3].nama}: <b>${rp(H.sekaliCuci[1].harga)} – ${rp(H.sekaliCuci[3].harga)}</b>.</li>
+<li>Langganan ${H.langganan[0].nama}: <b>${rp(H.langganan[0].harga)}/bulan</b> untuk ${H.langganan[0].frekuensi.replace(' / ', ' per ')}.</li>
 </ul>
-<h2>Harga poles mobil (exterior detailing)</h2>
-<p>Poles mobil panggilan mengangkat jamur, water spot, dan baret halus, lalu melapisi cat dengan sealant. Harganya <b>${rp(d.exterior.harga[0])}</b> (small), <b>${rp(d.exterior.harga[1])}</b> (medium), dan <b>${rp(d.exterior.harga[2])}</b> (large).</p>
+<h2>Harga poles mobil</h2>
+<p>Poles mobil panggilan mengangkat bintik air dan menyamarkan baret halus, lalu melapisi cat dengan sealant. Harganya <b>${rp(d.exterior.harga[0])}</b> (mobil kecil), <b>${rp(d.exterior.harga[1])}</b> (sedang), dan <b>${rp(d.exterior.harga[2])}</b> (besar).</p>
 <h2>Harga salon mobil interior</h2>
-<p>Cuci interior dan jok mobil dengan steam dan extractor: <b>${rp(d.interior.harga[0])} – ${rp(d.interior.harga[2])}</b> sesuai ukuran mobil.</p>
-<h2>Harga salon mobil lengkap (complete detailing)</h2>
-<p>Paket lengkap interior, exterior, kaca, mesin, serta ban & velg: <b>${rp(d.complete.harga[0])}</b> (small) sampai <b>${rp(d.complete.harga[2])}</b> (large). Lebih hemat dibanding memesan satu per satu.</p>
+<p>Jok, karpet, dan plafon dicuci dengan uap dan mesin extractor: <b>${rp(d.interior.harga[0])} – ${rp(d.interior.harga[2])}</b> sesuai ukuran mobil.</p>
+<h2>Harga salon mobil lengkap</h2>
+<p>Kabin, cat, kaca, ruang mesin, serta ban & velg sekaligus: <b>${rp(d.complete.harga[0])}</b> (mobil kecil) sampai <b>${rp(d.complete.harga[2])}</b> (besar). Lebih murah dibanding memesan satu per satu.</p>
 <h2>Cara memilih paket</h2>
 <ol>
-<li><b>Mobil hanya berdebu?</b> Cukup cuci reguler atau berlangganan.</li>
-<li><b>Cat kusam, ada jamur atau baret halus?</b> Pilih poles mobil (exterior detailing).</li>
+<li><b>Mobil hanya berdebu?</b> Cukup cuci sekali datang atau langganan.</li>
+<li><b>Cat kusam, ada bintik air atau baret halus?</b> Pilih poles & proteksi cat.</li>
 <li><b>Kabin bau apek atau jok bernoda?</b> Pilih salon interior, bisa ditambah fogging.</li>
-<li><b>Mobil bekas atau lama tidak dirawat?</b> Complete detailing sekaligus.</li>
+<li><b>Mobil bekas atau lama tidak dirawat?</b> Salon mobil lengkap sekaligus.</li>
 </ol>
-<p>Ukuran mobil: small (Agya, Brio, Jazz), medium (Avanza, Xpander, HR-V), large (Fortuner, Pajero, Alphard). Untuk mobil mewah atau ukuran ekstra, harga dikonfirmasi lewat WhatsApp.</p>`,
+<p>Ukuran mobil: kecil (${c.ukuran[0].contoh.split('mis. ')[1]}), sedang (${c.ukuran[1].contoh.split('mis. ')[1]}), besar (${c.ukuran[2].contoh.split('mis. ')[1]}). Untuk mobil mewah atau ukuran ekstra, harga dikonfirmasi lewat WhatsApp.</p>`,
     },
     {
       slug: 'fogging-mobil-manfaat-harga-berapa-bulan-sekali',
@@ -107,7 +107,7 @@ export const extraPosts = (c, rp) => {
 <h2>Berapa bulan sekali?</h2>
 <p>Untuk pemakaian harian, fogging <b>3–6 bulan sekali</b> sudah cukup. Lakukan lebih sering bila mobil sering membawa anak kecil, hewan peliharaan, atau baru terkena banjir.</p>
 <h2>Harga fogging mobil</h2>
-<p>Di ${c.brand}, fogging disinfektan <b>${rp(fog.harga)}</b> dan bisa ditambahkan ke paket cuci mana pun. Pelanggan cuci berlangganan mendapat diskon fogging hingga ${Math.max(...c.harga.langganan.map((x) => x.diskonFogging))}%.</p>
+<p>Di ${c.brand}, fogging disinfektan <b>${rp(fog.harga)}</b> dan bisa ditambahkan ke paket cuci mana pun. Pelanggan langganan Kilap mendapat diskon fogging hingga ${Math.max(...c.harga.langganan.map((x) => x.diskonFogging))}%.</p>
 <p>Tips: fogging paling efektif dilakukan <b>setelah</b> kabin dibersihkan (vacuum dan lap). Kalau kabin masih kotor, bau akan kembali lagi dalam waktu singkat.</p>`,
     },
     {
@@ -129,7 +129,7 @@ export const extraPosts = (c, rp) => {
 <li><b>Mobil baru atau ingin perlindungan bertahun-tahun:</b> poles ringan lalu coating.</li>
 <li><b>Apa pun pilihannya:</b> cuci rutin dengan sampo pH netral agar lapisan pelindung awet.</li>
 </ul>
-<p>Layanan exterior detailing ${c.brand} mencakup dekontaminasi, poles, dan sealant protection, dikerjakan langsung di rumah Anda. Harga mulai ${rp(H.detailing.find((x) => x.id === 'exterior').harga[0])}.</p>`,
+<p>Layanan poles & proteksi cat ${c.brand} mencakup pembersihan kontaminan, poles, dan sealant, dikerjakan langsung di rumah Anda. Harga mulai ${rp(H.detailing.find((x) => x.id === 'exterior').harga[0])}.</p>`,
     },
   ];
 };
