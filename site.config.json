@@ -1,17 +1,17 @@
 {
-  "_petunjuk": "SEMUA data situs ada di file ini. Ganti nama brand, nomor WA, rekening, dan harga di sini, lalu commit — situs otomatis dibangun ulang oleh GitHub Actions.",
+  "_petunjuk": "SEMUA data situs ada di file ini. Ganti nama brand, nomor WA, rekening, dan harga di sini, lalu commit — situs otomatis dibangun ulang oleh GitHub Actions. Rekening yang masih berisi angka 0 semua tidak ditampilkan di situs.",
 
   "brand": "KlikKilap",
-  "tagline": "Cuci & Salon Mobil Panggilan",
+  "tagline": "Cuci mobil panggilan & salon mobil di rumah",
   "baseUrl": "https://klikkilap.com",
   "customDomain": "klikkilap.com",
   "whatsapp": "6285888010614",
   "whatsappDisplay": "0858-8801-0614",
-  "email": "halo@klikkilap.com",
+  "email": "",
   "instagram": "",
   "tahunBerdiri": 2026,
-  "jamOperasional": "Senin – Minggu, 06.00 – 18.00 WIB",
-  "orderTerakhir": "16.30",
+  "jamOperasional": "Setiap hari, pukul 06.00–18.00 WIB",
+  "orderTerakhir": "16.00",
   "jamPilihan": ["06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"],
   "area": ["Jakarta Selatan", "Jakarta Timur", "Jakarta Barat", "Jakarta Utara", "Jakarta Pusat", "Depok", "Bogor", "Tangerang", "Tangerang Selatan", "Bekasi"],
   "pembayaran": {
@@ -22,54 +22,53 @@
     "qris": true
   },
   "garansiJam": 24,
-  "bonusCuciDetailing": true,
-  "produk": "Meguiar's, Sonax & Menzerna",
+  "produk": "sampo pH-netral, degreaser, dan sealant kelas detailer",
 
   "harga": {
     "langganan": [
-      { "id": "bronze", "nama": "Bronze", "frekuensi": "1x cuci / minggu", "sampo": "Sampo wax premium", "diskonFogging": 30, "harga": 299000 },
-      { "id": "silver", "nama": "Silver", "frekuensi": "2x cuci / minggu", "sampo": "Sampo wax premium", "diskonFogging": 30, "harga": 439000 },
-      { "id": "gold", "nama": "Gold", "frekuensi": "3x cuci / minggu", "sampo": "Sampo wax premium", "diskonFogging": 30, "harga": 569000, "label": "Terlaris" },
-      { "id": "diamond", "nama": "Diamond", "frekuensi": "3x cuci / minggu", "sampo": "Snow foam + sealant", "diskonFogging": 60, "harga": 699000, "label": "Paling Hemat" },
-      { "id": "ultimate", "nama": "Ultimate", "frekuensi": "6x cuci / minggu", "sampo": "Snow foam + sealant", "diskonFogging": 85, "harga": 1299000 }
+      { "id": "kilap4", "nama": "Kilap 4", "perMinggu": 1, "frekuensi": "4x cuci / bulan", "sampo": "Sampo wax premium", "diskonFogging": 30, "harga": 299000 },
+      { "id": "kilap8", "nama": "Kilap 8", "perMinggu": 2, "frekuensi": "8x cuci / bulan", "sampo": "Sampo wax premium", "diskonFogging": 30, "harga": 439000 },
+      { "id": "kilap12", "nama": "Kilap 12", "perMinggu": 3, "frekuensi": "12x cuci / bulan", "sampo": "Sampo wax premium", "diskonFogging": 30, "harga": 569000, "label": "Favorit" },
+      { "id": "kilap12plus", "nama": "Kilap 12 Plus", "perMinggu": 3, "frekuensi": "12x cuci / bulan", "sampo": "Snow foam + sealant", "diskonFogging": 60, "harga": 699000, "label": "Nilai terbaik" },
+      { "id": "kilap24plus", "nama": "Kilap 24 Plus", "perMinggu": 6, "frekuensi": "24x cuci / bulan", "sampo": "Snow foam + sealant", "diskonFogging": 85, "harga": 1299000 }
     ],
     "sekaliCuci": [
-      { "id": "basic", "nama": "Basic", "ikon": "⭐", "deskripsi": "Cuci bodi luar dan bersihkan kabin dengan sampo pH-netral + wax dan peralatan standar profesional.", "isi": ["Cuci tangan (hand wash)", "Lap & bersihkan interior", "Vacuum kabin", "Semir ban"], "harga": 85000, "durasi": "1 jam" },
-      { "id": "standard", "nama": "Standard", "ikon": "🌟", "deskripsi": "Semua isi Basic, ditambah angkat noda kerak di cat dan pembersihan ruang mesin.", "isi": ["Semua isi Basic", "Foam wash", "Spot remover bodi", "Pembersihan mesin"], "harga": 259000, "durasi": "2 jam" },
-      { "id": "professional", "nama": "Professional", "ikon": "⚡", "deskripsi": "Semua isi Standard, ditambah hilangkan jamur kaca dan noda aspal di bodi.", "isi": ["Semua isi Standard", "Spot remover kaca", "Tar remover (noda aspal)"], "harga": 429000, "durasi": "3 jam" },
-      { "id": "elite", "nama": "Elite", "ikon": "🏆", "deskripsi": "Semua isi Professional, ditambah clay bar dan lapisan sealant untuk kilap tahan lama.", "isi": ["Semua isi Professional", "Claying", "Sealant protection"], "harga": 689000, "durasi": "4 jam" }
+      { "id": "kilat", "nama": "Kilat", "deskripsi": "Untuk mobil yang dipakai harian dan hanya berdebu. Bodi dan kabin rapi dalam sekali datang.", "isi": ["Cuci bodi dua ember", "Vacuum jok & karpet", "Lap dashboard & panel pintu", "Semir ban"], "harga": 85000, "durasi": "1 jam" },
+      { "id": "segar", "nama": "Segar", "deskripsi": "Untuk mobil yang lama tidak dicuci, dengan lumpur di kolong dan noda kerak di cat.", "isi": ["Semua isi Kilat", "Snow foam pra-cuci", "Bilas kolong & rumah roda", "Angkat noda kerak di cat"], "harga": 259000, "durasi": "1,5 jam" },
+      { "id": "tuntas", "nama": "Tuntas", "deskripsi": "Untuk mobil yang kacanya mulai berjamur dan ruang mesinnya berdebu tebal.", "isi": ["Semua isi Segar", "Hapus jamur kaca", "Hapus bintik aspal", "Bersihkan ruang mesin"], "harga": 429000, "durasi": "2,5 jam" },
+      { "id": "istimewa", "nama": "Istimewa", "deskripsi": "Untuk acara penting atau mobil yang mau dijual: cat dihaluskan dan dilapisi pelindung.", "isi": ["Semua isi Tuntas", "Clay bar bodi", "Lapisan sealant", "Pewangi kabin"], "harga": 689000, "durasi": "3,5 jam" }
     ],
     "addOn": [
-      { "id": "spot-body", "nama": "Spot Remover – Bodi", "deskripsi": "Angkat jamur & noda kerak di permukaan cat", "harga": 175000, "durasi": "1 jam" },
-      { "id": "spot-kaca", "nama": "Spot Remover – Kaca", "deskripsi": "Angkat jamur & noda kerak di kaca", "harga": 175000, "durasi": "1 jam" },
-      { "id": "claying", "nama": "Claying", "deskripsi": "Angkat kotoran yang menempel di pori-pori cat", "harga": 175000, "durasi": "1 jam" },
-      { "id": "wax", "nama": "Sealing Wax Protection", "deskripsi": "Kembalikan kilap & lindungi lapisan cat", "harga": 175000, "durasi": "1 jam" },
-      { "id": "fogging", "nama": "Fogging Disinfektan", "deskripsi": "Basmi bakteri & bau tidak sedap di kabin", "harga": 299000, "durasi": "30 menit" }
+      { "id": "jamur-cat", "nama": "Hapus Jamur Cat", "deskripsi": "Bintik air & kerak yang menempel di cat diangkat", "harga": 175000, "durasi": "45 menit" },
+      { "id": "jamur-kaca", "nama": "Hapus Jamur Kaca", "deskripsi": "Kaca depan & samping bening lagi, tidak silau di malam hari", "harga": 175000, "durasi": "45 menit" },
+      { "id": "claybar", "nama": "Clay Bar", "deskripsi": "Permukaan cat halus kembali, siap dipoles atau dilapisi", "harga": 175000, "durasi": "1 jam" },
+      { "id": "wax", "nama": "Lapis Wax", "deskripsi": "Air mudah meluncur, cat lebih mengkilap", "harga": 175000, "durasi": "40 menit" },
+      { "id": "fogging", "nama": "Fogging Kabin", "deskripsi": "Kabut disinfektan untuk bau apek & kuman di kabin", "harga": 299000, "durasi": "30 menit" }
     ],
     "detailing": [
-      { "id": "interior", "nama": "Interior Detailing", "slug": "interior", "durasi": ["3 jam", "4 jam", "5 jam"], "harga": [699000, 789000, 879000] },
-      { "id": "exterior", "nama": "Exterior Detailing", "slug": "exterior", "durasi": ["4 jam", "5 jam", "6 jam"], "harga": [699000, 789000, 879000] },
-      { "id": "kaca", "nama": "Kaca / Window Detailing", "slug": "kaca", "durasi": ["2 jam", "2,5 jam", "3 jam"], "harga": [439000, 529000, 619000] },
-      { "id": "mesin", "nama": "Engine Detailing", "slug": "mesin", "durasi": ["1 jam", "1 jam", "1 jam"], "harga": [349000, 395000, 439000] },
-      { "id": "ban", "nama": "Ban & Velg Detailing", "slug": "ban-velg", "durasi": ["1 jam", "1 jam", "1 jam"], "harga": [219000, 219000, 219000] },
-      { "id": "complete", "nama": "Complete Detailing", "slug": "salon-mobil", "durasi": ["8 jam", "9 jam", "10 jam"], "harga": [2190000, 2549000, 2899000] }
+      { "id": "interior", "nama": "Salon Interior & Jok", "durasi": ["± 3 jam", "± 3,5 jam", "± 4,5 jam"], "harga": [699000, 789000, 879000] },
+      { "id": "exterior", "nama": "Poles & Proteksi Cat", "durasi": ["± 4 jam", "± 4,5 jam", "± 5,5 jam"], "harga": [699000, 789000, 879000] },
+      { "id": "kaca", "nama": "Perawatan Kaca", "durasi": ["± 1,5 jam", "± 2 jam", "± 2,5 jam"], "harga": [439000, 529000, 619000] },
+      { "id": "mesin", "nama": "Cuci Ruang Mesin", "durasi": ["± 1 jam", "± 1,5 jam", "± 1,5 jam"], "harga": [349000, 395000, 439000] },
+      { "id": "ban", "nama": "Ban & Velg", "durasi": ["± 45 menit", "± 1 jam", "± 1 jam"], "harga": [219000, 219000, 219000] },
+      { "id": "complete", "nama": "Salon Mobil Lengkap", "durasi": ["± 7 jam", "± 8,5 jam", "± 9,5 jam"], "harga": [2190000, 2549000, 2899000] }
     ],
     "banjir": {
-      "level": ["Sampai karpet dasar", "Sampai jok", "Sampai atap"],
+      "level": ["Air sebatas lantai kabin", "Air sebatas dudukan jok", "Air di atas dashboard"],
       "harga": [
         [1979000, 2419000, 2639000],
         [2419000, 2859000, 3079000],
         [2859000, 3299000, 3519000]
       ],
-      "durasi": ["8 jam", "9 jam", "10 jam"]
+      "durasi": ["± 1 hari kerja", "1–2 hari kerja", "± 2 hari kerja"]
     }
   },
 
   "ukuran": [
-    { "id": "small", "nama": "Small", "contoh": "Agya, Ayla, Brio, Jazz, Yaris, Swift, Ignis" },
-    { "id": "medium", "nama": "Medium", "contoh": "Avanza, Xpander, HR-V, CR-V, Innova, BR-V" },
-    { "id": "large", "nama": "Large", "contoh": "Fortuner, Pajero Sport, Alphard, Land Cruiser" },
-    { "id": "xl", "nama": "XL / Luxury", "contoh": "Mobil mewah & ukuran ekstra — harga via konsultasi WA" }
+    { "id": "kecil", "nama": "Kecil", "contoh": "City car & hatchback — mis. Brio, Agya, Sigra, Yaris" },
+    { "id": "sedang", "nama": "Sedang", "contoh": "MPV & SUV kompak — mis. Avanza, Xpander, Rush, HR-V" },
+    { "id": "besar", "nama": "Besar", "contoh": "SUV & MPV besar — mis. Fortuner, Pajero Sport, Innova Zenix, Alphard" },
+    { "id": "ekstra", "nama": "Ekstra / Mewah", "contoh": "Mobil mewah atau ukuran di luar itu — harga lewat chat" }
   ],
 
   "testimoni": []
