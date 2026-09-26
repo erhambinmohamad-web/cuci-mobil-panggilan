@@ -11,7 +11,7 @@ const c = JSON.parse(fs.readFileSync(path.join(ROOT, 'site.config.json'), 'utf8'
 const H = c.harga;
 
 // ---------- util ----------
-const site = (process.env.SITE_URL || (c.customDomain ? `https://${c.customDomain}` : c.baseUrl)).replace(/\/$/, '');
+const site = (c.customDomain ? `https://${c.customDomain}` : (process.env.SITE_URL || c.baseUrl)).replace(/\/$/, '');
 const BASE = (new URL(site + '/').pathname).replace(/\/?$/, '/'); // mis. "/cuci-mobil-panggilan/"
 const u = (p = '') => BASE + p.replace(/^\//, '');
 const abs = (p = '') => site + '/' + p.replace(/^\//, '');
