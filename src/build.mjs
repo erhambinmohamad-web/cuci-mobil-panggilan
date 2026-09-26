@@ -33,7 +33,8 @@ const NAV = [
   { t: 'Tentang Kami', href: 'tentang-kami/' },
 ];
 
-const logo = `<span class="logo-mark">${icon.drop(20).replace('stroke="currentColor"', 'stroke="#fff"')}</span><span>${esc(c.brand.replace(/(Go|go)$/, ''))}<b>${esc((c.brand.match(/(Go|go)$/) || [''])[0])}</b></span>`;
+const brandParts = c.brand.match(/^(.+?)([A-Z][a-z0-9]*)$/) || [null, c.brand, ''];
+const logo = `<span class="logo-mark">${icon.drop(20).replace('stroke="currentColor"', 'stroke="#fff"')}</span><span>${esc(brandParts[1])}<b>${esc(brandParts[2])}</b></span>`;
 
 function header(cur) {
   const items = NAV.map((n) => {
