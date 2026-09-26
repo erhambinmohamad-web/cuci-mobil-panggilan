@@ -27,9 +27,9 @@
 
   "harga": {
     "langganan": [
-      { "id": "bronze", "nama": "Bronze", "frekuensi": "1x cuci / minggu", "sampo": "Sampo pH-netral + wax", "diskonFogging": 30, "harga": 299000 },
-      { "id": "silver", "nama": "Silver", "frekuensi": "2x cuci / minggu", "sampo": "Sampo pH-netral + wax", "diskonFogging": 30, "harga": 439000 },
-      { "id": "gold", "nama": "Gold", "frekuensi": "3x cuci / minggu", "sampo": "Sampo pH-netral + wax", "diskonFogging": 30, "harga": 569000, "label": "Terlaris" },
+      { "id": "bronze", "nama": "Bronze", "frekuensi": "1x cuci / minggu", "sampo": "Sampo wax premium", "diskonFogging": 30, "harga": 299000 },
+      { "id": "silver", "nama": "Silver", "frekuensi": "2x cuci / minggu", "sampo": "Sampo wax premium", "diskonFogging": 30, "harga": 439000 },
+      { "id": "gold", "nama": "Gold", "frekuensi": "3x cuci / minggu", "sampo": "Sampo wax premium", "diskonFogging": 30, "harga": 569000, "label": "Terlaris" },
       { "id": "diamond", "nama": "Diamond", "frekuensi": "3x cuci / minggu", "sampo": "Snow foam + sealant", "diskonFogging": 60, "harga": 699000, "label": "Paling Hemat" },
       { "id": "ultimate", "nama": "Ultimate", "frekuensi": "6x cuci / minggu", "sampo": "Snow foam + sealant", "diskonFogging": 85, "harga": 1299000 }
     ],
