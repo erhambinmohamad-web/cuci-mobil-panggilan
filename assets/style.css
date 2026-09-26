@@ -87,7 +87,8 @@ p{margin:0 0 1em}
 .g3{grid-template-columns:repeat(3,1fr)}
 .g4{grid-template-columns:repeat(4,1fr)}
 .g5{grid-template-columns:repeat(5,1fr)}
-@media (max-width:1024px){.g5{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:1180px){.g5{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:1024px){.g4{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:720px){.g2,.g3,.g4,.g5{grid-template-columns:1fr}}
 .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px;display:flex;flex-direction:column}
 .card.shadow{box-shadow:var(--shadow);border-color:transparent}
@@ -255,3 +256,10 @@ label.f i{color:var(--accent-d);font-style:normal}
 
 .mt0{margin-top:0}.mb0{margin-bottom:0}.mt24{margin-top:24px}.mt40{margin-top:40px}
 .muted{color:var(--muted)}
+.price-card .price{margin:10px 0 2px;font-size:clamp(1.25rem,1.8vw,1.5rem);white-space:nowrap;line-height:1.15}
+.price-card .price small{display:block;margin-top:2px}
+.price-card .per{font-size:.82rem;color:var(--muted);white-space:nowrap}
+.price-card ul{font-size:.87rem}
+.price-card ul li{white-space:nowrap}
+.booking>*{min-width:0}
+.opt .box,.opt b,.opt small{overflow-wrap:anywhere}
