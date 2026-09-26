@@ -107,7 +107,7 @@ export const extraPosts = (c, rp) => {
 <h2>Berapa bulan sekali?</h2>
 <p>Untuk pemakaian harian, fogging <b>3–6 bulan sekali</b> sudah cukup. Lakukan lebih sering bila mobil sering membawa anak kecil, hewan peliharaan, atau baru terkena banjir.</p>
 <h2>Harga fogging mobil</h2>
-<p>Di ${c.brand}, fogging disinfektan <b>${rp(fog.harga)}</b> dan bisa ditambahkan ke paket cuci mana pun. Pelanggan cuci berlangganan mendapat diskon fogging hingga 75%.</p>
+<p>Di ${c.brand}, fogging disinfektan <b>${rp(fog.harga)}</b> dan bisa ditambahkan ke paket cuci mana pun. Pelanggan cuci berlangganan mendapat diskon fogging hingga ${Math.max(...c.harga.langganan.map((x) => x.diskonFogging))}%.</p>
 <p>Tips: fogging paling efektif dilakukan <b>setelah</b> kabin dibersihkan (vacuum dan lap). Kalau kabin masih kotor, bau akan kembali lagi dalam waktu singkat.</p>`,
     },
     {
