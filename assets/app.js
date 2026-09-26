@@ -50,7 +50,7 @@
       '<span class="box"><b>' + title + '</b>' + (small ? '<small>' + small + '</small>' : '') + (price ? '<span class="p">' + price + '</span>' : '') + '</span></label>';
   }
   function sizeOpts(pre) {
-    return '<fieldset class="fieldset"><legend>Ukuran mobil Anda</legend><div class="opt-grid c4">' +
+    return '<fieldset class="fieldset"><legend>Ukuran mobil</legend><div class="opt-grid c4">' +
       S.ukuran.map(function (u, i) { return opt('radio', 'ukuran', i, u.nama, u.contoh, '', pre === u.id); }).join('') + '</div></fieldset>';
   }
   function layanan() { var r = $('input[name=layanan]:checked'); return r ? r.value : ''; }
@@ -60,22 +60,22 @@
   function renderStep2() {
     var l = layanan(), h = '', pk = q.get('paket'), uk = q.get('ukuran');
     if (l === 'langganan') {
-      h = '<fieldset class="fieldset"><legend>Pilih paket berlangganan</legend><div class="opt-grid c3">' +
-        H.langganan.map(function (p) { return opt('radio', 'paket', p.id, p.nama + (p.label ? ' · ' + p.label : ''), p.frekuensi + ' · ' + p.sampo + ' · diskon fogging ' + p.diskonFogging + '%', rp(p.harga) + '/bulan', pk === p.id); }).join('') +
+      h = '<fieldset class="fieldset"><legend>Paket Kilap mana?</legend><div class="opt-grid c3">' +
+        H.langganan.map(function (p) { return opt('radio', 'paket', p.id, p.nama + (p.label ? ' · ' + p.label : ''), p.frekuensi + ' (' + p.perMinggu + 'x seminggu) · ' + p.sampo + ' · fogging hemat ' + p.diskonFogging + '%', rp(p.harga) + '/bulan', pk === p.id); }).join('') +
         '</div></fieldset>';
     } else if (l === 'sekali') {
-      h = '<fieldset class="fieldset"><legend>Pilih paket satu kali cuci</legend><div class="opt-grid">' +
-        H.sekaliCuci.map(function (p) { return opt('radio', 'paket', p.id, p.ikon + ' ' + p.nama, p.isi.join(' · ') + ' · ±' + p.durasi, rp(p.harga), pk === p.id); }).join('') +
-        '</div></fieldset><fieldset class="fieldset"><legend>Tambahan (opsional)</legend><div class="opt-grid c3">' +
+      h = '<fieldset class="fieldset"><legend>Tingkat cuci</legend><div class="opt-grid">' +
+        H.sekaliCuci.map(function (p) { return opt('radio', 'paket', p.id, p.nama, p.isi.join(' · ') + ' · ±' + p.durasi, rp(p.harga), pk === p.id); }).join('') +
+        '</div></fieldset><fieldset class="fieldset"><legend>Tambahan (boleh dilewati)</legend><div class="opt-grid c3">' +
         H.addOn.map(function (a) { return opt('checkbox', 'addon', a.id, a.nama, a.deskripsi, rp(a.harga)); }).join('') + '</div></fieldset>';
     } else if (l === 'detailing') {
-      h = '<fieldset class="fieldset"><legend>Pilih jenis detailing (boleh lebih dari satu)</legend><div class="opt-grid c3">' +
-        H.detailing.map(function (d) { return opt('checkbox', 'det', d.id, d.nama, d.id === 'complete' ? 'Paket lengkap 5 layanan — lebih hemat' : '', 'mulai ' + rp(d.harga[0]), pk === d.id); }).join('') +
-        '</div>' + (S.bonus ? '<p class="hint">🎁 Bonus 1x cuci gratis untuk Interior & Exterior Detailing.</p>' : '') + '</fieldset>' + sizeOpts(uk);
+      h = '<fieldset class="fieldset"><legend>Perawatan yang diinginkan (boleh lebih dari satu)</legend><div class="opt-grid c3">' +
+        H.detailing.map(function (d) { return opt('checkbox', 'det', d.id, d.nama, d.id === 'complete' ? 'Gabungan 5 perawatan, lebih murah' : '', 'mulai ' + rp(d.harga[0]), pk === d.id); }).join('') +
+        '</div></fieldset>' + sizeOpts(uk);
     } else if (l === 'banjir') {
-      h = sizeOpts(uk).replace('Ukuran mobil Anda', 'Ukuran mobil Anda <small class="muted">(butuh listrik min. 2.000 watt)</small>') +
-        '<fieldset class="fieldset"><legend>Mobil terendam sampai bagian apa?</legend><div class="opt-grid c3">' +
-        H.banjir.level.map(function (lv, i) { return opt('radio', 'level', i, lv, '', ''); }).join('') + '</div></fieldset>';
+      h = sizeOpts(uk).replace('Ukuran mobil</legend>', 'Ukuran mobil <small class="muted">(lokasi perlu listrik min. 2.000 watt)</small></legend>') +
+        '<fieldset class="fieldset"><legend>Setinggi apa air masuk ke kabin?</legend><div class="opt-grid c3">' +
+        H.banjir.level.map(function (lv, i) { return opt('radio', 'level', i, lv, H.banjir.durasi[i], ''); }).join('') + '</div></fieldset>';
     }
     $('#step2').innerHTML = h;
     q = new URLSearchParams(); // prefill hanya sekali
@@ -97,11 +97,11 @@
     $('#lblTanggal').innerHTML = (l === 'langganan' ? 'Tanggal mulai' : 'Tanggal') + ' <i>*</i>';
     if (l !== 'langganan') { wrap.hidden = true; return; }
     var p = H.langganan.filter(function (x) { return x.id === val('paket'); })[0];
-    var n = p ? parseInt(p.frekuensi, 10) || 1 : 1;
+    var n = p ? (p.perMinggu || 1) : 1;
     wrap.hidden = false;
     var prev = vals('hari');
     $('#hariList').innerHTML = HARI.map(function (d) { return opt('checkbox', 'hari', d, d, '', '', prev.indexOf(d) > -1); }).join('');
-    $('#hariHint').textContent = 'Pilih ' + n + ' hari (paket ' + (p ? p.nama : '') + ').';
+    $('#hariHint').textContent = 'Centang ' + n + ' hari dalam seminggu' + (p ? ' untuk ' + p.nama : '') + '.';
     $('#hariList').dataset.max = n;
   }
 
@@ -111,22 +111,22 @@
     var ui = uk === '' ? -1 : +uk;
     if (l === 'langganan') {
       var p = H.langganan.filter(function (x) { return x.id === val('paket'); })[0];
-      if (p) { rows.push(['Langganan ' + p.nama + ' (' + p.frekuensi + ')', p.harga, '/bulan']); total += p.harga; }
+      if (p) { rows.push([p.nama + ' (' + p.frekuensi + ')', p.harga, '/bulan']); total += p.harga; }
     } else if (l === 'sekali') {
       var s = H.sekaliCuci.filter(function (x) { return x.id === val('paket'); })[0];
-      if (s) { rows.push(['Cuci ' + s.nama, s.harga]); total += s.harga; }
+      if (s) { rows.push(['Cuci sekali datang – ' + s.nama, s.harga]); total += s.harga; }
       vals('addon').forEach(function (id) { var a = H.addOn.filter(function (x) { return x.id === id; })[0]; rows.push(['+ ' + a.nama, a.harga]); total += a.harga; });
     } else if (l === 'detailing') {
       vals('det').forEach(function (id) {
         var d = H.detailing.filter(function (x) { return x.id === id; })[0];
         if (ui < 0) rows.push([d.nama, null]);
-        else if (ui > 2) { rows.push([d.nama + ' (XL)', 'Konsultasi']); konsul = true; }
+        else if (ui > 2) { rows.push([d.nama + ' (' + S.ukuran[3].nama + ')', 'Lewat chat']); konsul = true; }
         else { rows.push([d.nama + ' (' + S.ukuran[ui].nama + ')', d.harga[ui]]); total += d.harga[ui]; }
       });
     } else if (l === 'banjir') {
       var lv = val('level');
-      if (ui > 2) { rows.push(['Paket banjir (XL)', 'Konsultasi']); konsul = true; }
-      else if (ui > -1 && lv !== '') { var hb = H.banjir.harga[ui][+lv]; rows.push(['Paket banjir – ' + H.banjir.level[+lv].toLowerCase() + ' (' + S.ukuran[ui].nama + ')', hb]); total += hb; }
+      if (ui > 2) { rows.push(['Pascabanjir (' + S.ukuran[3].nama + ')', 'Lewat chat']); konsul = true; }
+      else if (ui > -1 && lv !== '') { var hb = H.banjir.harga[ui][+lv]; rows.push(['Pascabanjir – ' + H.banjir.level[+lv].toLowerCase() + ' (' + S.ukuran[ui].nama + ')', hb]); total += hb; }
     }
     return { rows: rows, total: total, konsul: konsul, per: l === 'langganan' ? '/bulan' : '' };
   }
@@ -135,8 +135,8 @@
     var r = calc();
     $('#sumBody').innerHTML = r.rows.length ? r.rows.map(function (x) {
       return '<div class="row"><span>' + x[0] + '</span><span>' + (x[1] === null ? 'pilih ukuran' : typeof x[1] === 'number' ? rp(x[1]) : x[1]) + '</span></div>';
-    }).join('') : '<p class="empty">Belum ada layanan dipilih.</p>';
-    $('#sumTotal').textContent = r.total ? rp(r.total) + r.per + (r.konsul ? ' + konsultasi' : '') : (r.konsul ? 'Konsultasi' : '—');
+    }).join('') : '<p class="empty">Belum ada layanan yang dipilih.</p>';
+    $('#sumTotal').textContent = r.total ? rp(r.total) + r.per + (r.konsul ? ' + harga lewat chat' : '') : (r.konsul ? 'Lewat chat' : '—');
   }
 
   function err(n, msg) { var e = $('[data-err="' + n + '"]'); if (msg) e.textContent = msg; e.classList.toggle('on', !!msg || msg === undefined); }
@@ -147,20 +147,20 @@
     var l = layanan();
     if (n === 1 && !l) { err(1); return false; }
     if (n === 2) {
-      if ((l === 'langganan' || l === 'sekali') && !val('paket')) return err(2, 'Pilih salah satu paket.'), false;
-      if (l === 'detailing' && !vals('det').length) return err(2, 'Pilih minimal satu jenis detailing.'), false;
-      if ((l === 'detailing' || l === 'banjir') && val('ukuran') === '') return err(2, 'Pilih ukuran mobil Anda.'), false;
-      if (l === 'banjir' && val('level') === '') return err(2, 'Pilih seberapa tinggi mobil terendam.'), false;
+      if ((l === 'langganan' || l === 'sekali') && !val('paket')) return err(2, 'Pilih salah satu paket dulu.'), false;
+      if (l === 'detailing' && !vals('det').length) return err(2, 'Centang minimal satu perawatan.'), false;
+      if ((l === 'detailing' || l === 'banjir') && val('ukuran') === '') return err(2, 'Pilih ukuran mobil.'), false;
+      if (l === 'banjir' && val('level') === '') return err(2, 'Pilih setinggi apa air masuk ke kabin.'), false;
     }
     if (n === 3) {
       var ok = true;
       $$('[data-p="3"] [required]').forEach(function (f) { if (!f.value.trim()) { f.classList.add('err'); ok = false; } });
-      var hp = $('#hp'); if (hp.value && !/^(\+?62|0)8\d{7,12}$/.test(hp.value.replace(/[\s-]/g, ''))) { hp.classList.add('err'); ok = false; err(3, 'Nomor WhatsApp tidak valid (contoh: 081234567890).'); return false; }
+      var hp = $('#hp'); if (hp.value && !/^(\+?62|0)8\d{7,12}$/.test(hp.value.replace(/[\s-]/g, ''))) { hp.classList.add('err'); ok = false; err(3, 'Nomor WhatsApp belum benar. Contoh: 081234567890.'); return false; }
       if (l === 'langganan') {
         var max = +$('#hariList').dataset.max || 1;
-        if (vals('hari').length !== max) { err(3, 'Pilih tepat ' + max + ' hari rutin untuk paket Anda.'); return false; }
+        if (vals('hari').length !== max) { err(3, 'Centang tepat ' + max + ' hari rutin sesuai paket.'); return false; }
       }
-      if (!ok) { err(3, 'Lengkapi kolom bertanda * terlebih dulu.'); return false; }
+      if (!ok) { err(3, 'Isi dulu kolom yang bertanda *.'); return false; }
     }
     return true;
   }
@@ -194,24 +194,24 @@
     e.preventDefault();
     if (!validate(3)) return;
     var r = calc(), l = layanan(), g = function (id) { return $('#' + id).value.trim(); };
-    var namaLayanan = { langganan: 'Cuci Mobil Berlangganan', sekali: 'Satu Kali Cuci', detailing: 'Salon Mobil / Detailing', banjir: 'Paket Banjir' }[l];
+    var namaLayanan = { langganan: 'Langganan Kilap', sekali: 'Cuci Sekali Datang', detailing: 'Salon & Perawatan', banjir: 'Pemulihan Pascabanjir' }[l];
     var tglFmt = new Date(g('tanggal') + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
     var lines = [
-      '*PESANAN BARU – ' + S.brand.toUpperCase() + '*', '',
+      '*JADWAL BARU – ' + S.brand.toUpperCase() + '*', '',
       '*Layanan:* ' + namaLayanan,
     ].concat(r.rows.map(function (x) { return '• ' + x[0] + (typeof x[1] === 'number' ? ' – ' + rp(x[1]) : x[1] ? ' – ' + x[1] : ''); }))
       .concat([
-        '*Estimasi:* ' + (r.total ? rp(r.total) + r.per : '-') + (r.konsul ? ' (+ konsultasi harga XL)' : ''), '',
+        '*Perkiraan biaya:* ' + (r.total ? rp(r.total) + r.per : '-') + (r.konsul ? ' (+ mobil ekstra, harga lewat chat)' : ''), '',
         '*Nama:* ' + g('nama'),
         '*WhatsApp:* ' + g('hp'),
         '*Alamat:* ' + g('alamat'),
-        '*Kota:* ' + g('kota'),
+        '*Wilayah:* ' + g('kota'),
         g('maps') ? '*Maps:* ' + g('maps') : null,
         g('merk') ? '*Mobil:* ' + g('merk') + (g('nopol') ? ' (' + g('nopol') + ')' : '') : null,
         '*' + (l === 'langganan' ? 'Mulai' : 'Jadwal') + ':* ' + tglFmt + ', jam ' + g('jam'),
         l === 'langganan' ? '*Hari rutin:* ' + vals('hari').join(', ') : null,
-        '*Kondisi lokasi:* ' + g('kondisi'),
-        g('sumber') ? '*Tahu dari:* ' + g('sumber') : null,
+        '*Fasilitas lokasi:* ' + g('kondisi'),
+        g('sumber') ? '*Kenal dari:* ' + g('sumber') : null,
         g('catatan') ? '*Catatan:* ' + g('catatan') : null,
         g('promo') ? '*Kode promo:* ' + g('promo') : null,
       ]).filter(function (x) { return x !== null; });
