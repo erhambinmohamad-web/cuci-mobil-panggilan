@@ -78,6 +78,11 @@ p{margin:0 0 1em}
 
 /* Grid & cards */
 .grid{display:grid;gap:20px}
+.grid>*{min-width:0}
+.area-price{table-layout:fixed}
+.area-price td{padding:10px 8px;overflow-wrap:anywhere}
+.area-price td.num{width:44%}
+@media (max-width:520px){.area-price td.num{white-space:normal}}
 .g2{grid-template-columns:repeat(2,1fr)}
 .g3{grid-template-columns:repeat(3,1fr)}
 .g4{grid-template-columns:repeat(4,1fr)}
@@ -176,7 +181,8 @@ details.faq p{color:var(--muted);margin:0 0 16px}
 
 /* Areas */
 .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.chips span{background:#fff;border:1px solid var(--line);border-radius:99px;padding:8px 14px;font-weight:600;font-size:.92rem}
+.chips span,.chips a{background:#fff;border:1px solid var(--line);border-radius:99px;padding:8px 14px;font-weight:600;font-size:.92rem;color:var(--ink)}
+.chips a:hover{border-color:var(--primary);color:var(--primary)}
 
 /* Blog */
 .post-card h3{margin-top:4px}
