@@ -2,8 +2,8 @@
 
 export const detailPages = {
   interior: {
-    title: 'Interior Detailing Panggilan',
-    h1: 'Interior Detailing',
+    title: 'Cuci Interior & Jok Mobil Panggilan (Interior Detailing)',
+    h1: 'Cuci Interior & Jok Mobil',
     sub: 'Kabin bersih, wangi, dan bebas kuman — dikerjakan di garasi Anda.',
     icon: 'seat',
     benefits: ['Kabin bersih & wangi', 'Bakteri & bau apek hilang', 'Jok & karpet cerah kembali'],
@@ -13,8 +13,8 @@ export const detailPages = {
     meta: 'Jasa interior detailing mobil panggilan: cuci jok, karpet, plafon & dashboard di rumah Anda. Anti-bakteri, bergaransi.',
   },
   exterior: {
-    title: 'Exterior Detailing Panggilan',
-    h1: 'Exterior Detailing',
+    title: 'Poles Mobil Panggilan – Exterior Detailing di Rumah',
+    h1: 'Poles Mobil & Exterior Detailing',
     sub: 'Kembalikan kilau cat mobil Anda, lengkap dengan lapisan pelindung.',
     icon: 'sparkle',
     benefits: ['Baret halus tersamarkan', 'Jamur & water spot hilang', 'Cat kinclong & terlindungi'],
