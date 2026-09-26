@@ -1,20 +1,23 @@
-# Situs Cuci & Salon Mobil Panggilan
+# KlikKilap — Situs Cuci Mobil Panggilan & Salon Mobil
 
-Situs statis multi-halaman (19 halaman) untuk usaha cuci mobil & salon mobil panggilan. Situs ini gratis di-hosting lewat **GitHub Pages** dan pesanan langsung masuk ke **WhatsApp**.
+Situs statis KlikKilap (klikkilap.com). Di-hosting gratis lewat **GitHub Pages**, pesanan langsung masuk ke **WhatsApp**.
 
 ## Isi situs
 
 | Halaman | URL |
 |---|---|
 | Beranda | `/` |
-| Cuci Berlangganan · Satu Kali Cuci | `/cuci-berlangganan/` · `/sekali-cuci/` |
-| Salon Mobil (Complete Detailing) | `/salon-mobil/` |
-| Interior · Exterior · Kaca · Mesin · Ban & Velg | `/interior/` `/exterior/` `/kaca/` `/mesin/` `/ban-velg/` |
-| Paket Banjir | `/paket-banjir/` |
-| Daftar Harga (8 kategori) | `/harga/` |
-| Form Pesan 3 langkah → WhatsApp | `/pesan/` |
-| FAQ · Tentang Kami · Karir | `/faq/` `/tentang-kami/` `/karir/` |
-| Blog + 3 artikel | `/blog/` |
+| Langganan Kilap · Cuci Sekali Datang | `/cuci-mobil-langganan/` · `/cuci-sekali-datang/` |
+| Salon Mobil Lengkap | `/salon-mobil-panggilan/` |
+| Interior & Jok · Poles Cat · Kaca · Ruang Mesin · Ban & Velg | `/cuci-interior-mobil/` `/poles-mobil/` `/detailing-kaca-mobil/` `/cuci-mesin-mobil/` `/ban-velg/` |
+| Pemulihan Pascabanjir | `/cuci-mobil-banjir/` |
+| Daftar Harga | `/daftar-harga/` |
+| Form pemesanan 3 langkah → WhatsApp | `/pesan/` |
+| Tanya Jawab · Tentang · Gabung Tim | `/tanya-jawab/` `/tentang-klikkilap/` `/gabung-tim/` |
+| Area layanan (10 wilayah) | `/area/` dan `/cuci-mobil-panggilan-<wilayah>/` |
+| Artikel | `/artikel/` |
+
+Alamat lama (mis. `/harga/`, `/faq/`) otomatis dialihkan ke alamat baru.
 
 Fitur SEO: title & meta description per halaman, canonical, Open Graph, schema.org (AutoWash, FAQPage, BlogPosting), `sitemap.xml`, `robots.txt`.
 
@@ -44,7 +47,7 @@ Semua data ada di **satu file: `site.config.json`**. Edit file itu langsung di G
 | `testimoni` | Kosong secara default. Isi hanya dengan testimoni **asli** pelanggan, contoh: `[{"nama":"Pak Andi","keterangan":"Depok","isi":"Hasilnya rapi, tepat waktu."}]` |
 | `customDomain` | Isi `www.domainanda.com` bila sudah punya domain sendiri |
 
-Teks halaman (deskripsi layanan, FAQ, artikel blog) ada di `src/content.mjs`.
+Teks halaman (deskripsi layanan, tanya jawab, artikel) ada di `src/content.mjs`.
 
 ## Pakai domain sendiri (opsional)
 
@@ -63,6 +66,7 @@ npm run preview      # buka http://localhost:3000
 
 ## Hal yang perlu Anda cek sebelum tayang
 
-- Nama brand, nomor WA, email, dan rekening masih **contoh** — ganti semuanya.
-- Kebijakan garansi cuci ulang 24 jam, bonus 1x cuci untuk detailing, serta aturan batal H-1 adalah nilai default. Sesuaikan dengan kebijakan Anda (`garansiJam`, `bonusCuciDetailing`, dan teks di `src/content.mjs`).
+- Rekening di `pembayaran` masih contoh dan **tidak ditampilkan** selama nomornya berisi angka 0 semua. Isi rekening asli bila ingin ditampilkan.
+- `email` dikosongkan. Isi hanya bila alamat email itu sudah aktif.
+- Kebijakan cek ulang 24 jam dan pembatalan H-1 adalah nilai default. Sesuaikan dengan kebijakan Anda (`garansiJam` dan teks di `src/content.mjs`).
 - Foto: situs memakai ilustrasi SVG buatan sendiri. Untuk konversi yang lebih baik, tambahkan foto hasil kerja Anda sendiri.
