@@ -27,14 +27,14 @@
 
   "harga": {
     "langganan": [
-      { "id": "bronze", "nama": "Bronze", "frekuensi": "1x cuci / minggu", "sampo": "Meguiar's Gold Class", "diskonFogging": 25, "harga": 299000 },
-      { "id": "silver", "nama": "Silver", "frekuensi": "2x cuci / minggu", "sampo": "Meguiar's Gold Class", "diskonFogging": 25, "harga": 439000 },
-      { "id": "gold", "nama": "Gold", "frekuensi": "3x cuci / minggu", "sampo": "Meguiar's Gold Class", "diskonFogging": 25, "harga": 569000, "label": "Terlaris" },
-      { "id": "diamond", "nama": "Diamond", "frekuensi": "3x cuci / minggu", "sampo": "Meguiar's Hyper Wash", "diskonFogging": 50, "harga": 699000, "label": "Paling Hemat" },
-      { "id": "ultimate", "nama": "Ultimate", "frekuensi": "6x cuci / minggu", "sampo": "Meguiar's Hyper Wash", "diskonFogging": 75, "harga": 1299000 }
+      { "id": "bronze", "nama": "Bronze", "frekuensi": "1x cuci / minggu", "sampo": "Sampo pH-netral + wax", "diskonFogging": 30, "harga": 299000 },
+      { "id": "silver", "nama": "Silver", "frekuensi": "2x cuci / minggu", "sampo": "Sampo pH-netral + wax", "diskonFogging": 30, "harga": 439000 },
+      { "id": "gold", "nama": "Gold", "frekuensi": "3x cuci / minggu", "sampo": "Sampo pH-netral + wax", "diskonFogging": 30, "harga": 569000, "label": "Terlaris" },
+      { "id": "diamond", "nama": "Diamond", "frekuensi": "3x cuci / minggu", "sampo": "Snow foam + sealant", "diskonFogging": 60, "harga": 699000, "label": "Paling Hemat" },
+      { "id": "ultimate", "nama": "Ultimate", "frekuensi": "6x cuci / minggu", "sampo": "Snow foam + sealant", "diskonFogging": 85, "harga": 1299000 }
     ],
     "sekaliCuci": [
-      { "id": "basic", "nama": "Basic", "ikon": "⭐", "deskripsi": "Cuci bodi luar dan bersihkan kabin dengan sampo Meguiar's Gold Class dan peralatan standar profesional.", "isi": ["Cuci tangan (hand wash)", "Lap & bersihkan interior", "Vacuum kabin", "Semir ban"], "harga": 85000, "durasi": "1 jam" },
+      { "id": "basic", "nama": "Basic", "ikon": "⭐", "deskripsi": "Cuci bodi luar dan bersihkan kabin dengan sampo pH-netral + wax dan peralatan standar profesional.", "isi": ["Cuci tangan (hand wash)", "Lap & bersihkan interior", "Vacuum kabin", "Semir ban"], "harga": 85000, "durasi": "1 jam" },
       { "id": "standard", "nama": "Standard", "ikon": "🌟", "deskripsi": "Semua isi Basic, ditambah angkat noda kerak di cat dan pembersihan ruang mesin.", "isi": ["Semua isi Basic", "Foam wash", "Spot remover bodi", "Pembersihan mesin"], "harga": 259000, "durasi": "2 jam" },
       { "id": "professional", "nama": "Professional", "ikon": "⚡", "deskripsi": "Semua isi Standard, ditambah hilangkan jamur kaca dan noda aspal di bodi.", "isi": ["Semua isi Standard", "Spot remover kaca", "Tar remover (noda aspal)"], "harga": 429000, "durasi": "3 jam" },
       { "id": "elite", "nama": "Elite", "ikon": "🏆", "deskripsi": "Semua isi Professional, ditambah clay bar dan lapisan sealant untuk kilap tahan lama.", "isi": ["Semua isi Professional", "Claying", "Sealant protection"], "harga": 689000, "durasi": "4 jam" }
