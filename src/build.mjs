@@ -568,9 +568,14 @@ for (const p of posts) {
     <fieldset class="fieldset"><legend>Kontak</legend><div class="form-grid">
       <div><label class="f" for="nama">Nama <i>*</i></label><input class="input" id="nama" name="nama" required autocomplete="name" placeholder="Nama Anda"></div>
       <div><label class="f" for="hp">Nomor WhatsApp <i>*</i></label><input class="input" id="hp" name="hp" required inputmode="tel" autocomplete="tel" placeholder="08xxxxxxxxxx"></div>
-      <div class="full"><label class="f" for="alamat">Alamat <i>*</i></label><textarea class="input" id="alamat" name="alamat" rows="2" required placeholder="Jalan, nomor, RT/RW, dan patokan"></textarea></div>
-      <div><label class="f" for="maps">Link lokasi Google Maps</label><input class="input" id="maps" name="maps" placeholder="Opsional"></div>
-      <div><label class="f" for="kota">Wilayah <i>*</i></label><select class="input" id="kota" name="kota" required><option value="">Pilih wilayah</option>${c.area.map((a) => `<option>${esc(a)}</option>`).join('')}<option>Di luar daftar</option></select></div>
+      <div class="full loc-box"><label class="f">Lokasi mobil <i>*</i></label>
+        <button type="button" class="btn btn-primary btn-block" id="btnLoc">${inl(icon.pin(18))} Bagikan lokasi saya</button>
+        <div class="hint" id="locStatus">Tekan tombol di atas saat Anda berada di dekat mobil. Tidak perlu mengetik alamat.</div>
+        <input type="hidden" id="maps" name="maps">
+        <button type="button" class="link-btn" id="btnAlamat" aria-expanded="false">Tidak bisa bagikan lokasi? Ketik alamat saja</button>
+        <div id="alamatWrap" hidden><textarea class="input mt12" id="alamat" name="alamat" rows="2" placeholder="Nama jalan, nomor rumah, atau patokan"></textarea></div>
+      </div>
+      <div><label class="f" for="kota">Wilayah</label><select class="input" id="kota" name="kota"><option value="">Pilih wilayah</option>${c.area.map((a) => `<option>${esc(a)}</option>`).join('')}<option>Di luar daftar</option></select></div>
     </div></fieldset>
     <fieldset class="fieldset"><legend>Mobil</legend><div class="form-grid">
       <div><label class="f" for="merk">Merek & tipe</label><input class="input" id="merk" name="merk" placeholder="mis. Honda HR-V"></div>
