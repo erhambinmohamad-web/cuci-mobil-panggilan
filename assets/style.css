@@ -268,3 +268,14 @@ label.f i{color:var(--accent-d);font-style:normal}
 .loc-box #btnLoc.err{outline:3px solid #e8612c;outline-offset:2px}
 .link-btn{background:none;border:0;padding:8px 0 0;color:var(--primary);font:inherit;font-size:.9rem;font-weight:600;text-decoration:underline;cursor:pointer}
 .mt12{margin-top:12px}
+.loc-map{height:200px;border-radius:12px;border:1px solid var(--line);background:repeating-linear-gradient(45deg,#f2f8f9 0 12px,#e9f3f5 12px 24px);margin-bottom:10px;display:grid;place-items:center;overflow:hidden;position:relative;z-index:0}
+.loc-map.on{display:block;height:240px}
+.loc-ph{color:var(--muted);font-size:.9rem;display:flex;align-items:center;gap:6px;padding:0 16px;text-align:center}
+.loc-acc{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:.9rem}
+.loc-acc[hidden]{display:none}
+.loc-acc b{white-space:nowrap}
+.loc-acc .bar{flex:1;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.loc-acc .bar i{display:block;height:100%;border-radius:4px;transition:width .4s}
+.loc-acc.baik b{color:var(--ok)}.loc-acc.baik .bar i{background:var(--ok)}
+.loc-acc.cukup b{color:#b45309}.loc-acc.cukup .bar i{background:#f59e0b}
+.loc-acc.kurang b{color:#c2410c}.loc-acc.kurang .bar i{background:#ef4444}
