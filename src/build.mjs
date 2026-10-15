@@ -569,6 +569,8 @@ for (const p of posts) {
       <div><label class="f" for="nama">Nama <i>*</i></label><input class="input" id="nama" name="nama" required autocomplete="name" placeholder="Nama Anda"></div>
       <div><label class="f" for="hp">Nomor WhatsApp <i>*</i></label><input class="input" id="hp" name="hp" required inputmode="tel" autocomplete="tel" placeholder="08xxxxxxxxxx"></div>
       <div class="full loc-box"><label class="f">Lokasi mobil <i>*</i></label>
+        <div class="loc-map" id="locMap" aria-label="Peta lokasi"><div class="loc-ph">${inl(icon.pin(20))} Peta dan tingkat presisi lokasi tampil di sini</div></div>
+        <div class="loc-acc" id="locAcc" hidden><b id="locAccTxt"></b><div class="bar"><i></i></div></div>
         <button type="button" class="btn btn-primary btn-block" id="btnLoc">${inl(icon.pin(18))} Bagikan lokasi saya</button>
         <div class="hint" id="locStatus">Tekan tombol di atas saat Anda berada di dekat mobil. Tidak perlu mengetik alamat.</div>
         <input type="hidden" id="maps" name="maps">
