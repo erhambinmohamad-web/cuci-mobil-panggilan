@@ -161,6 +161,7 @@
         if (vals('hari').length !== max) { err(3, 'Centang tepat ' + max + ' hari rutin sesuai paket.'); return false; }
       }
       if (!ok) { err(3, 'Isi dulu kolom yang bertanda *.'); return false; }
+      if (!$('#maps').value && !$('#alamat').value.trim()) { $('#btnLoc').classList.add('err'); err(3, 'Bagikan lokasi atau ketik alamat dulu.'); return false; }
     }
     return true;
   }
@@ -187,6 +188,26 @@
   $$('[data-next]').forEach(function (b) { b.addEventListener('click', function () { if (validate(step)) go(step + 1); }); });
   $$('[data-prev]').forEach(function (b) { b.addEventListener('click', function () { clearErr(); go(step - 1); }); });
 
+  // Bagikan lokasi (GPS ponsel) atau ketik alamat
+  var btnLoc = $('#btnLoc'), locStatus = $('#locStatus');
+  function bukaAlamat(pesan) { $('#alamatWrap').hidden = false; $('#btnAlamat').setAttribute('aria-expanded', 'true'); if (pesan) locStatus.textContent = pesan; $('#alamat').focus(); }
+  $('#btnAlamat').addEventListener('click', function () { bukaAlamat(); });
+  btnLoc.addEventListener('click', function () {
+    btnLoc.classList.remove('err');
+    if (!navigator.geolocation) { bukaAlamat('Ponsel ini tidak mendukung bagikan lokasi. Silakan ketik alamat.'); return; }
+    btnLoc.disabled = true; locStatus.textContent = 'Mencari lokasi… izinkan akses lokasi bila diminta.';
+    navigator.geolocation.getCurrentPosition(function (p) {
+      var lat = p.coords.latitude.toFixed(6), lng = p.coords.longitude.toFixed(6);
+      $('#maps').value = 'https://maps.google.com/?q=' + lat + ',' + lng;
+      btnLoc.disabled = false; btnLoc.classList.add('done'); btnLoc.lastChild.textContent = ' Lokasi tersimpan (ketuk untuk ulang)';
+      locStatus.innerHTML = 'Lokasi terbaca, akurasi ± ' + Math.round(p.coords.accuracy) + ' m. <a href="' + $('#maps').value + '" target="_blank" rel="noopener">Cek di peta</a>';
+      clearErr();
+    }, function (e) {
+      btnLoc.disabled = false;
+      bukaAlamat(e.code === 1 ? 'Akses lokasi ditolak. Silakan ketik alamat, atau kirim lokasi lewat WhatsApp setelah pesanan terkirim.' : 'Lokasi belum terbaca. Silakan ketik alamat, atau coba lagi di tempat terbuka.');
+    }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
+  });
+
   var tgl = $('#tanggal');
   var d = new Date(); tgl.min = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 
@@ -204,9 +225,9 @@
         '*Perkiraan biaya:* ' + (r.total ? rp(r.total) + r.per : '-') + (r.konsul ? ' (+ mobil ekstra, harga lewat chat)' : ''), '',
         '*Nama:* ' + g('nama'),
         '*WhatsApp:* ' + g('hp'),
-        '*Alamat:* ' + g('alamat'),
-        '*Wilayah:* ' + g('kota'),
-        g('maps') ? '*Maps:* ' + g('maps') : null,
+        g('maps') ? '*Lokasi:* ' + g('maps') : null,
+        g('alamat') ? '*Alamat:* ' + g('alamat') : null,
+        g('kota') ? '*Wilayah:* ' + g('kota') : null,
         g('merk') ? '*Mobil:* ' + g('merk') + (g('nopol') ? ' (' + g('nopol') + ')' : '') : null,
         '*' + (l === 'langganan' ? 'Mulai' : 'Jadwal') + ':* ' + tglFmt + ', jam ' + g('jam'),
         l === 'langganan' ? '*Hari rutin:* ' + vals('hari').join(', ') : null,
