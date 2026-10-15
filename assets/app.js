@@ -188,24 +188,59 @@
   $$('[data-next]').forEach(function (b) { b.addEventListener('click', function () { if (validate(step)) go(step + 1); }); });
   $$('[data-prev]').forEach(function (b) { b.addEventListener('click', function () { clearErr(); go(step - 1); }); });
 
-  // Bagikan lokasi (GPS ponsel) atau ketik alamat
-  var btnLoc = $('#btnLoc'), locStatus = $('#locStatus');
+  // Bagikan lokasi (GPS ponsel) + peta presisi, atau ketik alamat
+  var btnLoc = $('#btnLoc'), locStatus = $('#locStatus'), peta = null, pin = null, lingkar = null, pantau = null, terbaik = null;
   function bukaAlamat(pesan) { $('#alamatWrap').hidden = false; $('#btnAlamat').setAttribute('aria-expanded', 'true'); if (pesan) locStatus.textContent = pesan; $('#alamat').focus(); }
   $('#btnAlamat').addEventListener('click', function () { bukaAlamat(); });
+  function muatLeaflet(cb) {
+    if (window.L) return cb();
+    var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'; document.head.appendChild(css);
+    var js = document.createElement('script'); js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'; js.onload = cb; js.onerror = function () { cb(true); }; document.head.appendChild(js);
+  }
+  function simpan(lat, lng) { $('#maps').value = 'https://maps.google.com/?q=' + lat.toFixed(6) + ',' + lng.toFixed(6); }
+  function tampilAkurasi(m, manual) {
+    var box = $('#locAcc'), lvl = manual ? 'baik' : m <= 20 ? 'baik' : m <= 60 ? 'cukup' : 'kurang';
+    var teks = manual ? 'Titik diatur manual' : { baik: 'Sangat presisi', cukup: 'Cukup presisi', kurang: 'Kurang presisi' }[lvl];
+    box.hidden = false; box.className = 'loc-acc ' + lvl;
+    $('#locAccTxt').textContent = teks + (manual ? '' : ' · ± ' + Math.round(m) + ' m');
+    box.querySelector('.bar i').style.width = (manual ? 100 : Math.max(8, Math.min(100, 100 - (m - 5) * 0.8))) + '%';
+  }
+  function gambarPeta(lat, lng, acc) {
+    var el = $('#locMap');
+    if (!window.L) { el.innerHTML = '<div class="loc-ph">Peta tidak bisa dimuat, lokasi tetap tersimpan.</div>'; return; }
+    if (!peta) {
+      el.innerHTML = ''; el.classList.add('on');
+      peta = L.map(el, { zoomControl: true, attributionControl: true }).setView([lat, lng], 17);
+      peta.attributionControl.setPrefix(false);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(peta);
+      lingkar = L.circle([lat, lng], { radius: acc, color: '#0b7285', weight: 2, fillColor: '#14a3b8', fillOpacity: .18 }).addTo(peta);
+      pin = L.marker([lat, lng], { draggable: true }).addTo(peta);
+      pin.on('dragend', function () { var p = pin.getLatLng(); if (pantau !== null) { navigator.geolocation.clearWatch(pantau); pantau = null; } lingkar.setLatLng(p).setRadius(5); simpan(p.lat, p.lng); tampilAkurasi(0, true); locStatus.textContent = 'Titik dipindah manual. Pastikan pin tepat di lokasi mobil.'; });
+    } else { pin.setLatLng([lat, lng]); lingkar.setLatLng([lat, lng]).setRadius(acc); }
+    peta.fitBounds(lingkar.getBounds(), { maxZoom: 18, padding: [20, 20] });
+  }
   btnLoc.addEventListener('click', function () {
     btnLoc.classList.remove('err');
     if (!navigator.geolocation) { bukaAlamat('Ponsel ini tidak mendukung bagikan lokasi. Silakan ketik alamat.'); return; }
-    btnLoc.disabled = true; locStatus.textContent = 'Mencari lokasi… izinkan akses lokasi bila diminta.';
-    navigator.geolocation.getCurrentPosition(function (p) {
-      var lat = p.coords.latitude.toFixed(6), lng = p.coords.longitude.toFixed(6);
-      $('#maps').value = 'https://maps.google.com/?q=' + lat + ',' + lng;
-      btnLoc.disabled = false; btnLoc.classList.add('done'); btnLoc.lastChild.textContent = ' Lokasi tersimpan (ketuk untuk ulang)';
-      locStatus.innerHTML = 'Lokasi terbaca, akurasi ± ' + Math.round(p.coords.accuracy) + ' m. <a href="' + $('#maps').value + '" target="_blank" rel="noopener">Cek di peta</a>';
-      clearErr();
-    }, function (e) {
-      btnLoc.disabled = false;
-      bukaAlamat(e.code === 1 ? 'Akses lokasi ditolak. Silakan ketik alamat, atau kirim lokasi lewat WhatsApp setelah pesanan terkirim.' : 'Lokasi belum terbaca. Silakan ketik alamat, atau coba lagi di tempat terbuka.');
-    }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
+    if (pantau !== null) navigator.geolocation.clearWatch(pantau);
+    terbaik = null; btnLoc.disabled = true; locStatus.textContent = 'Mencari lokasi… izinkan akses lokasi bila diminta.';
+    muatLeaflet(function () {
+      var mulai = Date.now();
+      pantau = navigator.geolocation.watchPosition(function (p) {
+        var c = p.coords;
+        if (terbaik && c.accuracy >= terbaik.accuracy) return;
+        terbaik = c; simpan(c.latitude, c.longitude); gambarPeta(c.latitude, c.longitude, c.accuracy); tampilAkurasi(c.accuracy);
+        btnLoc.disabled = false; btnLoc.classList.add('done'); btnLoc.lastChild.textContent = ' Lokasi tersimpan (ketuk untuk ulang)';
+        locStatus.textContent = c.accuracy <= 20 ? 'Lokasi sudah presisi. Geser pin bila belum tepat di mobil.' : 'Masih mempertajam lokasi… atau geser pin ke posisi mobil.';
+        clearErr();
+        if (c.accuracy <= 15 || Date.now() - mulai > 20000) { navigator.geolocation.clearWatch(pantau); pantau = null; }
+      }, function (e) {
+        btnLoc.disabled = false; if (pantau !== null) { navigator.geolocation.clearWatch(pantau); pantau = null; }
+        if (terbaik) return;
+        bukaAlamat(e.code === 1 ? 'Akses lokasi ditolak. Silakan ketik alamat, atau kirim lokasi lewat WhatsApp setelah pesanan terkirim.' : 'Lokasi belum terbaca. Silakan ketik alamat, atau coba lagi di tempat terbuka.');
+      }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 });
+      setTimeout(function () { if (pantau !== null) { navigator.geolocation.clearWatch(pantau); pantau = null; } }, 25000);
+    });
   });
 
   var tgl = $('#tanggal');
