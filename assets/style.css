@@ -263,3 +263,8 @@ label.f i{color:var(--accent-d);font-style:normal}
 .price-card ul li{white-space:nowrap}
 .booking>*{min-width:0}
 .opt .box,.opt b,.opt small{overflow-wrap:anywhere}
+.loc-box #btnLoc{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px}
+.loc-box #btnLoc.done{background:var(--ok);border-color:var(--ok)}
+.loc-box #btnLoc.err{outline:3px solid #e8612c;outline-offset:2px}
+.link-btn{background:none;border:0;padding:8px 0 0;color:var(--primary);font:inherit;font-size:.9rem;font-weight:600;text-decoration:underline;cursor:pointer}
+.mt12{margin-top:12px}
