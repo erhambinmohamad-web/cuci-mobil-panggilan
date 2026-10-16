@@ -69,12 +69,14 @@ p{margin:0 0 1em}
 .hero p.lead{margin-bottom:24px}
 .hero-actions{display:flex;flex-wrap:wrap;gap:12px}
 .hero-art{position:relative}
+.hero-art svg{width:100%;height:auto}
 .hero-price{position:absolute;left:0;bottom:8%;background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:10px 16px;font-size:.85rem;color:var(--muted)}
 .hero-price b{display:block;font-size:1.3rem;color:var(--ink)}
 .steps-inline{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 20px;padding:0;list-style:none}
 .steps-inline li{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--primary)}
 .steps-inline li+li:before{content:"→";color:var(--muted);font-weight:400}
-@media (max-width:860px){.hero-grid{grid-template-columns:1fr}.hero-art{max-width:460px;margin:0 auto}}
+@media (max-width:860px){.hero-grid{grid-template-columns:1fr}.hero-art{width:100%;max-width:460px;margin:0 auto}}
+@media (max-width:520px){.hero-price{bottom:4%;padding:8px 12px}.hero-price b{font-size:1.1rem}}
 
 /* Grid & cards */
 .grid{display:grid;gap:20px}
