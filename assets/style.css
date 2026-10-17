@@ -84,7 +84,10 @@ p{margin:0 0 1em}
 .area-price{table-layout:fixed}
 .area-price td{padding:10px 8px;overflow-wrap:anywhere}
 .area-price td.num{width:44%}
-@media (max-width:520px){.area-price td.num{white-space:normal}}
+.size-table.area-price td.num{white-space:normal;line-height:1.25;overflow-wrap:normal;word-break:keep-all}
+@media (max-width:520px){.size-table.area-price{table-layout:auto}.size-table.area-price td{padding:10px 6px}.size-table.area-price td.num{width:auto;white-space:nowrap;font-size:.95rem}}
+.area-price td.num small{display:block;font-size:.75rem;font-weight:600;color:var(--muted)}
+.area-price td.num small.per{display:block;font-size:.75rem}
 .g2{grid-template-columns:repeat(2,1fr)}
 .g3{grid-template-columns:repeat(3,1fr)}
 .g4{grid-template-columns:repeat(4,1fr)}
@@ -296,3 +299,5 @@ label.f i{color:var(--accent-d);font-style:normal}
 .rek small{display:block;color:var(--muted);font-size:.8rem}
 .rek b{font-size:1.05rem;word-break:break-all}
 @media (max-width:520px){[data-p="4"] .form-nav{flex-direction:column-reverse}[data-p="4"] .form-nav .btn{width:100%;justify-content:center}}
+@media (max-width:380px){.logo{font-size:1.15rem;gap:6px}.logo-mark{width:30px;height:30px}.nav-cta{gap:4px}.nav-cta .btn-primary{padding:7px 10px;font-size:.82rem}}
+@media (max-width:340px){.logo{font-size:1rem}.logo-mark{width:28px;height:28px}.nav-cta .btn-primary{padding:6px 8px;font-size:.78rem}}
