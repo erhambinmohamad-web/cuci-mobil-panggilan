@@ -615,7 +615,7 @@ ${B.aktif ? `
       ${B.qris ? `<div class="pay-pane" data-pane="qris">
         <div class="qr-wrap"><img id="qrImg" alt="QRIS pembayaran booking"><div class="loc-ph" id="qrPh">Menyiapkan kode QR…</div></div>
         <a class="btn btn-outline btn-block" id="qrSave" download="qris-booking-klikkilap.png">Simpan gambar QR</a>
-        <p class="hint">Nominal sudah terisi otomatis. Di HP: simpan gambar, buka aplikasi bank atau e-wallet, pilih <b>Scan / Bayar</b>, lalu ambil QR dari galeri.</p>
+        <p class="hint">Mohon diperiksa pesanan dan nominalnya. Simpan gambar, buka aplikasi bank atau e-wallet, pilih <b>Scan / Bayar</b>, lalu ambil QR dari galeri.</p>
       </div>` : ''}
       ${B.rek ? `<div class="pay-pane" data-pane="transfer">
         <p class="hint mb0">${B.rek.length > 1 ? 'Pilih bank tujuan, lalu salin nomor rekeningnya:' : 'Rekening tujuan:'}</p>
