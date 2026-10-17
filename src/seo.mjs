@@ -54,6 +54,49 @@ export const areas = [
     sekitar: ['Summarecon Bekasi', 'Harapan Indah', 'Galaxy', 'Jatiasih', 'Rawalumbu', 'Tambun', 'Cikarang'],
     intro: 'Dari Summarecon Bekasi sampai Cikarang, cuci mobil panggilan menghemat waktu akhir pekan Anda — tidak perlu antre di car wash yang penuh setiap Sabtu dan Minggu.',
   },
+  {
+    nama: 'Surabaya', slug: 'cuci-mobil-panggilan-surabaya',
+    sekitar: ['Darmo', 'Citraland', 'Pakuwon City', 'Gubeng', 'Sukolilo', 'Rungkut', 'Mulyorejo', 'Wiyung', 'Tegalsari', 'Kenjeran'],
+    intro: 'Panas terik dan udara pesisir Surabaya membuat cat cepat kusam dan kaca mudah berjamur. Kami melayani 31 kecamatan di Surabaya Pusat, Utara, Timur, Selatan, dan Barat. Dari perumahan Citraland dan Pakuwon City sampai kawasan Darmo dan Rungkut, tim kami datang ke garasi Anda, jadi mobil tidak perlu antre di car wash.',
+    wilayah: [
+      {
+        nama: 'Surabaya Pusat', slug: 'cuci-mobil-panggilan-surabaya-pusat',
+        kecamatan: ['Bubutan', 'Genteng', 'Simokerto', 'Tegalsari'],
+        kawasan: ['Tunjungan', 'Ketabang', 'Embong Kaliasin', 'Kedungdoro'],
+        intro: 'Di pusat kota yang padat dan serba sibuk, parkir di car wash sering memakan waktu. Tim kami datang ke rumah, ruko, atau kantor Anda di Genteng, Tegalsari, Bubutan, dan Simokerto, jadi mobil bisa dicuci saat Anda bekerja.',
+      },
+      {
+        nama: 'Surabaya Utara', slug: 'cuci-mobil-panggilan-surabaya-utara',
+        kecamatan: ['Bulak', 'Kenjeran', 'Krembangan', 'Pabean Cantian', 'Semampir'],
+        kawasan: ['Kenjeran', 'Tanjung Perak', 'Kedung Cowek', 'Sukolilo Baru'],
+        intro: 'Angin laut di kawasan Kenjeran dan Tanjung Perak membawa uap garam yang menempel di cat, kaca, dan velg. Cuci rutin dan lapisan sealant membantu mencegah karat dan cat kusam lebih cepat.',
+      },
+      {
+        nama: 'Surabaya Timur', slug: 'cuci-mobil-panggilan-surabaya-timur',
+        kecamatan: ['Gubeng', 'Gunung Anyar', 'Mulyorejo', 'Rungkut', 'Sukolilo', 'Tambaksari', 'Tenggilis Mejoyo'],
+        kawasan: ['Pakuwon City', 'Manyar', 'Dharmahusada', 'Klampis', 'Kalijudan', 'MERR'],
+        intro: 'Perumahan di Pakuwon City, Manyar, dan sepanjang MERR umumnya punya carport yang cukup lega untuk salon mobil lengkap. Untuk apartemen di Gubeng dan Sukolilo, kami bekerja di area cuci yang diizinkan pengelola.',
+      },
+      {
+        nama: 'Surabaya Selatan', slug: 'cuci-mobil-panggilan-surabaya-selatan',
+        kecamatan: ['Dukuh Pakis', 'Gayungan', 'Jambangan', 'Karang Pilang', 'Sawahan', 'Wiyung', 'Wonocolo', 'Wonokromo'],
+        kawasan: ['Darmo', 'Ketintang', 'Jemursari', 'Graha Famili', 'Kebraon', 'Dukuh Kupang'],
+        intro: 'Dari rumah-rumah lama di kawasan Darmo sampai perumahan baru di Wiyung dan Karang Pilang, cuci mobil panggilan menghemat waktu Anda di akhir pekan tanpa perlu antre di car wash.',
+      },
+      {
+        nama: 'Surabaya Barat', slug: 'cuci-mobil-panggilan-surabaya-barat',
+        kecamatan: ['Asemrowo', 'Benowo', 'Lakarsantri', 'Pakal', 'Sambikerep', 'Sukomanunggal', 'Tandes'],
+        kawasan: ['Citraland', 'Pakuwon Indah', 'Darmo Permai', 'Graha Natura', 'Lontar', 'Manukan'],
+        intro: 'Kawasan perumahan besar di Citraland, Pakuwon Indah, dan Darmo Permai cocok untuk perawatan lengkap di rumah. Debu dari jalan utama dan proyek baru di Surabaya Barat membuat cuci berlangganan jadi pilihan yang praktis.',
+      },
+    ],
+  },
+  {
+    nama: 'Gresik', slug: 'cuci-mobil-panggilan-gresik',
+    sekitar: ['Gresik Kota Baru (GKB)', 'Kebomas', 'Kota Baru Driyorejo', 'Menganti', 'Manyar', 'Cerme', 'Driyorejo', 'Bungah'],
+    kecamatan: ['Balongpanggang', 'Benjeng', 'Bungah', 'Cerme', 'Driyorejo', 'Duduksampeyan', 'Dukun', 'Gresik', 'Kebomas', 'Kedamean', 'Manyar', 'Menganti', 'Panceng', 'Sidayu', 'Ujungpangkah', 'Wringinanom'],
+    intro: 'Debu kawasan industri dan udara pesisir membuat mobil di Gresik cepat kotor, cat kusam, dan kaca berjamur. Dari perumahan GKB di Kebomas, Kota Baru Driyorejo, sampai Menganti dan Manyar, tim kami datang ke rumah Anda, jadi mobil tetap terawat tanpa harus antre di car wash.',
+  },
 ];
 
 export const extraPosts = (c, rp) => {
@@ -62,12 +105,48 @@ export const extraPosts = (c, rp) => {
   const fog = H.addOn.find((a) => a.id === 'fogging');
   return [
     {
+      slug: 'cuci-mobil-panggilan-surabaya',
+      title: 'Cuci Mobil Panggilan Surabaya & Gresik: Area, Harga, dan Tips Merawat Mobil',
+      date: '2026-10-17',
+      excerpt: 'Panduan cuci dan salon mobil panggilan di Surabaya dan Gresik: kecamatan yang dilayani, kisaran harga, dan cara menjaga cat tetap kilap di cuaca panas dan udara pesisir.',
+      body: `
+<p>Surabaya terkenal panas. Suhu siang yang tinggi, debu jalan, dan udara pesisir di kawasan utara membuat cat mobil cepat kusam, kaca berjamur, dan kabin terasa pengap. Cuci mobil panggilan memudahkan perawatan rutin tanpa harus keluar rumah di tengah terik.</p>
+<h2>Area cuci mobil panggilan di Surabaya</h2>
+<p>${c.brand} melayani <b>seluruh 31 kecamatan</b> di Kota Surabaya:</p>
+<ul>
+<li><a href="/cuci-mobil-panggilan-surabaya-pusat/">Surabaya Pusat</a>: Bubutan, Genteng, Simokerto, Tegalsari.</li>
+<li><a href="/cuci-mobil-panggilan-surabaya-utara/">Surabaya Utara</a>: Bulak, Kenjeran, Krembangan, Pabean Cantian, Semampir.</li>
+<li><a href="/cuci-mobil-panggilan-surabaya-timur/">Surabaya Timur</a>: Gubeng, Gunung Anyar, Mulyorejo, Rungkut, Sukolilo, Tambaksari, Tenggilis Mejoyo.</li>
+<li><a href="/cuci-mobil-panggilan-surabaya-selatan/">Surabaya Selatan</a>: Dukuh Pakis, Gayungan, Jambangan, Karang Pilang, Sawahan, Wiyung, Wonocolo, Wonokromo.</li>
+<li><a href="/cuci-mobil-panggilan-surabaya-barat/">Surabaya Barat</a>: Asemrowo, Benowo, Lakarsantri, Pakal, Sambikerep, Sukomanunggal, Tandes.</li>
+</ul>
+<h2>Harga cuci & salon mobil panggilan Surabaya</h2>
+<p>Harga di Surabaya sama dengan area lain dan sudah termasuk tenaga, bahan, peralatan, dan ongkos datang:</p>
+<ul>
+<li>Cuci sekali datang mulai <b>${rp(H.sekaliCuci[0].harga)}</b>.</li>
+<li>Langganan ${H.langganan[0].nama} mulai <b>${rp(H.langganan[0].harga)}/bulan</b>.</li>
+<li>Poles & proteksi cat mulai <b>${rp(d.exterior.harga[0])}</b>, salon interior & jok mulai <b>${rp(d.interior.harga[0])}</b>.</li>
+<li>Salon mobil lengkap mulai <b>${rp(d.complete.harga[0])}</b>.</li>
+</ul>
+<h2>Tips merawat mobil di cuaca Surabaya</h2>
+<ol>
+<li><b>Jangan cuci di bawah terik siang.</b> Air sampo cepat mengering dan meninggalkan bintik. Pilih pagi atau sore hari.</li>
+<li><b>Lapisi cat dengan sealant atau wax.</b> Lapisan pelindung mengurangi efek panas matahari dan uap garam.</li>
+<li><b>Bilas velg dan kolong lebih sering</b> bila sering melintas di kawasan pesisir seperti Kenjeran dan Tanjung Perak.</li>
+<li><b>Jaga kabin tetap sejuk dan kering.</b> Pakai pelindung dashboard dan buka jendela sebentar setelah mobil dijemur.</li>
+<li><b>Hapus jamur kaca secara berkala</b> agar pandangan tetap jelas saat hujan deras di musim penghujan.</li>
+</ol>
+<h2>Juga melayani Gresik</h2>
+<p>Tim yang sama juga menjangkau <a href="/cuci-mobil-panggilan-gresik/">Gresik</a>: Gresik Kota Baru (GKB), Kebomas, Kota Baru Driyorejo, Menganti, Manyar, Cerme, dan kecamatan lain di daratan Kabupaten Gresik, dengan harga yang sama.</p>
+<p>Siap menjadwalkan? <a href="/pesan/">Pesan lewat form</a>, bagikan lokasi Anda, dan tim kami datang sesuai jadwal.</p>`,
+    },
+    {
       slug: 'harga-salon-mobil-dan-poles-mobil-panggilan',
       title: 'Harga Salon Mobil & Poles Mobil Panggilan 2026 (Daftar Lengkap)',
       date: '2026-09-26',
       excerpt: 'Daftar harga cuci mobil panggilan, poles mobil, salon interior, dan salon lengkap per ukuran mobil, plus cara memilih paket yang pas.',
       body: `
-<p>Sebelum memesan salon mobil atau poles mobil panggilan, wajar kalau Anda ingin tahu kisaran harganya dulu. Berikut daftar harga ${c.brand} yang berlaku untuk area Jabodetabek. Harga sudah termasuk tenaga, produk, peralatan, dan transport.</p>
+<p>Sebelum memesan salon mobil atau poles mobil panggilan, wajar kalau Anda ingin tahu kisaran harganya dulu. Berikut daftar harga ${c.brand} yang berlaku di semua area layanan kami, Jabodetabek, Surabaya, maupun Gresik. Harga sudah termasuk tenaga, produk, peralatan, dan transport.</p>
 <h2>Harga cuci mobil panggilan</h2>
 <ul>
 <li>Cuci sekali datang paket ${H.sekaliCuci[0].nama}: <b>${rp(H.sekaliCuci[0].harga)}</b>, berisi ${H.sekaliCuci[0].isi.join(', ').toLowerCase()}.</li>
