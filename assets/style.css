@@ -301,3 +301,9 @@ label.f i{color:var(--accent-d);font-style:normal}
 @media (max-width:520px){[data-p="4"] .form-nav{flex-direction:column-reverse}[data-p="4"] .form-nav .btn{width:100%;justify-content:center}}
 @media (max-width:380px){.logo{font-size:1.15rem;gap:6px}.logo-mark{width:30px;height:30px}.nav-cta{gap:4px}.nav-cta .btn-primary{padding:7px 10px;font-size:.82rem}}
 @media (max-width:340px){.logo{font-size:1rem}.logo-mark{width:28px;height:28px}.nav-cta .btn-primary{padding:6px 8px;font-size:.78rem}}
+.star{color:#f59e0b}
+.review-box{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px;border:1px solid var(--line);border-radius:var(--radius);background:var(--soft)}
+.review-box h2{margin:0 0 6px;font-size:1.3rem}
+.btn-review{background:#fff;color:var(--ink);border:2px solid var(--line);white-space:nowrap;flex-shrink:0}
+.btn-review:hover{border-color:#f59e0b;color:var(--ink)}
+@media (max-width:640px){.review-box{flex-direction:column;align-items:stretch;text-align:center}.btn-review{justify-content:center}}
