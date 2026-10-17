@@ -7,6 +7,14 @@ export const detailPages = {
     h1: 'Salon Interior & Jok Mobil',
     sub: 'Jok, karpet, dan plafon dicuci di garasi Anda. Kabin kering di hari yang sama.',
     icon: 'seat',
+
+export const detailPages = {
+  interior: {
+    slug: 'cuci-interior-mobil',
+    title: 'Cuci Interior & Jok Mobil Panggilan',
+    h1: 'Salon Interior & Jok Mobil',
+    sub: 'Jok, karpet, dan plafon dicuci di garasi Anda. Kabin kering di hari yang sama.',
+    icon: 'seat',
     masalah: [
       ['Noda kopi & susu di jok', 'Dicuci-sedot sampai ke busa, bukan sekadar dilap permukaannya.'],
       ['Bau apek setelah musim hujan', 'Karpet dikeringkan tuntas, sumber lembap dicari dan dibersihkan.'],
@@ -135,8 +143,20 @@ export const detailPages = {
   },
 };
 
+// Pembayaran booking di form pesan: aktif bila QRIS statis atau rekening asli sudah diisi
+const crc16 = (str) => { let x = 0xffff; for (let i = 0; i < str.length; i++) { x ^= str.charCodeAt(i) << 8; for (let j = 0; j < 8; j++) x = x & 0x8000 ? ((x << 1) ^ 0x1021) & 0xffff : (x << 1) & 0xffff; } return x.toString(16).toUpperCase().padStart(4, '0'); };
+export const qrisValid = (q) => typeof q === 'string' && /^000201/.test(q.trim()) && q.trim().slice(-8, -4) === '6304' && crc16(q.trim().slice(0, -4)) === q.trim().slice(-4).toUpperCase();
+export const bayarInfo = (c) => {
+  const b = c.pembayaran || {};
+  const rek = /[1-9]/.test(b.noRekening || '') ? { bank: b.bank, no: String(b.noRekening).replace(/\s/g, ''), an: b.atasNama } : null;
+  const qris = qrisValid(b.qrisPayload) ? b.qrisPayload.trim() : '';
+  const persen = +b.bookingPersen || 0;
+  return { aktif: persen > 0 && !!(qris || rek), persen, qris, rek };
+};
+
 export const faq = (c) => {
   const rekeningAsli = c.pembayaran && /[1-9]/.test(c.pembayaran.noRekening || '');
+  const B = bayarInfo(c);
   const metode = [c.pembayaran.qris ? 'QRIS' : '', rekeningAsli ? `transfer ${c.pembayaran.bank} ${c.pembayaran.noRekening} a.n. ${c.pembayaran.atasNama}` : 'transfer bank', c.pembayaran.tunai ? 'tunai ke petugas' : ''].filter(Boolean).join(', ');
   return [
     {
@@ -153,7 +173,7 @@ export const faq = (c) => {
       grup: 'Saat tim datang',
       items: [
         ['Berapa lama tim berada di lokasi?', 'Paket Kilat sekitar satu jam. Salon lengkap bisa seharian. Estimasi setiap paket tertulis di halaman harga.'],
-        ['Apakah saya harus menunggui?', 'Tidak harus. Cukup pastikan mobil bisa dibuka, lalu cek hasilnya sebelum membayar.'],
+        ['Apakah saya harus menunggui?', `Tidak harus. Cukup pastikan mobil bisa dibuka, lalu cek hasilnya sebelum ${B.aktif ? 'melunasi sisa biaya' : 'membayar'}.`],
         ['Bagaimana kalau hujan di hari H?', 'Jadwal bisa digeser tanpa biaya. Tim akan menghubungi Anda bila cuaca tidak memungkinkan.'],
         ['Tim membawa jet washer?', 'Tim membawa peralatan cuci dua ember. Jet washer dipakai bila tersedia listrik dan Anda menginginkannya.'],
       ],
@@ -171,10 +191,10 @@ export const faq = (c) => {
     {
       grup: 'Pembayaran & garansi',
       items: [
-        ['Kapan saya membayar?', 'Untuk cuci sekali datang dan salon, bayar setelah pekerjaan selesai dan Anda sudah mengecek hasilnya. Langganan dibayar di awal setiap periode.'],
-        ['Metode pembayaran apa saja?', `${metode.charAt(0).toUpperCase() + metode.slice(1)}. Detail pembayaran dikirim lewat WhatsApp saat konfirmasi pesanan.`],
+        ['Kapan saya membayar?', B.aktif ? `Saat memesan, Anda membayar booking ${B.persen}% dari total biaya untuk mengunci jadwal. Sisanya dibayar setelah pekerjaan selesai dan Anda sudah mengecek hasilnya. Untuk langganan, booking ${B.persen}% dihitung dari biaya bulan pertama; bulan berikutnya dibayar di awal periode.` : 'Untuk cuci sekali datang dan salon, bayar setelah pekerjaan selesai dan Anda sudah mengecek hasilnya. Langganan dibayar di awal setiap periode.'],
+        ['Metode pembayaran apa saja?', `${metode.charAt(0).toUpperCase() + metode.slice(1)}. ${B.aktif ? 'Detail pembayaran booking tampil di langkah terakhir form pemesanan.' : 'Detail pembayaran dikirim lewat WhatsApp saat konfirmasi pesanan.'}`],
         ['Bagaimana cara klaim garansi?', `Kirim foto bagian yang kurang bersih lewat WhatsApp paling lambat ${c.garansiJam} jam setelah pengerjaan. Tim datang lagi tanpa biaya. Kotor karena hujan atau pemakaian baru tidak termasuk.`],
-        ['Bagaimana dengan pembatalan?', 'Pembatalan paling lambat sehari sebelumnya tidak dikenai biaya. Bila tim sudah tiba di lokasi, kedatangan dihitung sebagai satu layanan.'],
+        ['Bagaimana dengan pembatalan?', B.aktif ? 'Batal paling lambat sehari sebelumnya (H-1): tanpa biaya, uang booking dikembalikan penuh. Batal di hari H: uang booking tidak dikembalikan. Bila tim sudah tiba di lokasi, kedatangan dihitung sebagai satu layanan.' : 'Pembatalan paling lambat sehari sebelumnya tidak dikenai biaya. Bila tim sudah tiba di lokasi, kedatangan dihitung sebagai satu layanan.'],
       ],
     },
     {
