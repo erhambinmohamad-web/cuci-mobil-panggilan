@@ -7,14 +7,6 @@ export const detailPages = {
     h1: 'Salon Interior & Jok Mobil',
     sub: 'Jok, karpet, dan plafon dicuci di garasi Anda. Kabin kering di hari yang sama.',
     icon: 'seat',
-
-export const detailPages = {
-  interior: {
-    slug: 'cuci-interior-mobil',
-    title: 'Cuci Interior & Jok Mobil Panggilan',
-    h1: 'Salon Interior & Jok Mobil',
-    sub: 'Jok, karpet, dan plafon dicuci di garasi Anda. Kabin kering di hari yang sama.',
-    icon: 'seat',
     masalah: [
       ['Noda kopi & susu di jok', 'Dicuci-sedot sampai ke busa, bukan sekadar dilap permukaannya.'],
       ['Bau apek setelah musim hujan', 'Karpet dikeringkan tuntas, sumber lembap dicari dan dibersihkan.'],
