@@ -550,35 +550,31 @@ for (const p of posts) {
     title: 'Jadwalkan Cuci & Salon Mobil di Rumah',
     desc: `Jadwalkan kunjungan ${c.brand}: pilih layanan, paket, alamat, dan waktu. Pesanan terkirim ke WhatsApp kami untuk dikonfirmasi.`,
     script: `<script>window.SITE=${JSON.stringify(pub)};</script>`,
-    body: `<section class="page-hero" style="padding-bottom:24px"><div class="container"><div class="crumbs"><a href="${u()}">Beranda</a> / Pesan Jadwal</div><h1>Jadwalkan Kunjungan ${esc(c.brand)}</h1><p class="lead mb0">${B.aktif ? `Empat langkah singkat. Bayar booking ${B.persen}% di langkah terakhir, lalu pesanan masuk ke WhatsApp kami dan jadwal Anda terkunci.` : 'Tiga langkah singkat. Setelah dikirim, pesanan masuk ke WhatsApp kami dan admin mengonfirmasi jadwalnya.'}</p></div></section>
+    body: `<section class="page-hero" style="padding-bottom:24px"><div class="container"><div class="crumbs"><a href="${u()}">Beranda</a> / Pesan Jadwal</div><h1>Jadwalkan Kunjungan ${esc(c.brand)}</h1><p class="lead mb0">${B.aktif ? 'Tiga langkah singkat: pilih layanan, isi data mobil dan jadwal, lalu kirim. Pesanan langsung masuk ke WhatsApp kami.' : 'Dua langkah singkat. Setelah dikirim, pesanan masuk ke WhatsApp kami dan admin mengonfirmasi jadwalnya.'}</p></div></section>
 <section class="section" style="padding-top:24px"><div class="container booking">
 <form id="bookForm" class="card" novalidate>
-  <ol class="stepper"><li class="on" data-s="1"><span class="n">1.</span> <span class="lg">Jenis layanan</span><span class="sm">Layanan</span></li><li data-s="2"><span class="n">2.</span> <span class="lg">Pilihan paket</span><span class="sm">Paket</span></li><li data-s="3"><span class="n">3.</span> <span class="lg">Alamat & waktu</span><span class="sm">Alamat</span></li>${B.aktif ? '<li data-s="4"><span class="n">4.</span> Booking</li>' : ''}</ol>
+  <ol class="stepper"><li class="on" data-s="1"><span class="n">1.</span> <span class="lg">Layanan & paket</span><span class="sm">Layanan</span></li><li data-s="2"><span class="n">2.</span> <span class="lg">Mobil, alamat & waktu</span><span class="sm">Mobil & jadwal</span></li>${B.aktif ? '<li data-s="3"><span class="n">3.</span> Booking</li>' : ''}</ol>
 
   <div class="panel on" data-p="1">
-    <fieldset class="fieldset"><legend>Layanan apa yang Anda butuhkan?</legend>
-    <div class="opt-grid">
-      <label class="opt"><input type="radio" name="layanan" value="langganan"><span class="box"><b>Langganan Kilap</b><small>4–24 kedatangan per bulan, hari tetap</small><span class="p">mulai ${rp(H.langganan[0].harga)}/bln</span></span></label>
-      <label class="opt"><input type="radio" name="layanan" value="sekali"><span class="box"><b>Cuci sekali datang</b><small>${esc(H.sekaliCuci[0].nama)} sampai ${esc(H.sekaliCuci[H.sekaliCuci.length - 1].nama)}, bisa pilih tambahan</small><span class="p">mulai ${rp(H.sekaliCuci[0].harga)}</span></span></label>
-      <label class="opt"><input type="radio" name="layanan" value="detailing"><span class="box"><b>Salon & perawatan</b><small>Interior, poles cat, kaca, ruang mesin, ban & velg, salon lengkap</small><span class="p">mulai ${rp(minOf(H.detailing.map((d) => d.harga[0])))}</span></span></label>
-      <label class="opt"><input type="radio" name="layanan" value="banjir"><span class="box"><b>Pemulihan pascabanjir</b><small>Kabin yang sempat terendam air</small><span class="p">mulai ${rp(H.banjir.harga[0][0])}</span></span></label>
+    <fieldset class="fieldset"><legend>Pilih layanan</legend>
+    <div class="cat-row">
+      <label class="cat"><input type="radio" name="layanan" value="sekali" checked><span><b>Cuci sekali datang</b><small>mulai</small><em>${rp(H.sekaliCuci[0].harga)}</em></span></label>
+      <label class="cat"><input type="radio" name="layanan" value="langganan"><span><b>Langganan Kilap</b><small>mulai</small><em>${rp(H.langganan[0].harga)}/bln</em></span></label>
+      <label class="cat"><input type="radio" name="layanan" value="detailing"><span><b>Salon & perawatan</b><small>mulai</small><em>${rp(minOf(H.detailing.map((d) => d.harga[0])))}</em></span></label>
+      <label class="cat"><input type="radio" name="layanan" value="banjir"><span><b>Pascabanjir</b><small>mulai</small><em>${rp(H.banjir.harga[0][0])}</em></span></label>
     </div></fieldset>
-    <div class="err-msg" data-err="1">Pilih salah satu jenis layanan dulu.</div>
+    <div id="step2"></div>
+    <div class="err-msg" data-err="1"></div>
     <div class="form-nav"><span></span><button type="button" class="btn btn-primary" data-next>Lanjut →</button></div>
   </div>
 
   <div class="panel" data-p="2">
-    <div id="step2"></div>
-    <div class="err-msg" data-err="2"></div>
-    <div class="form-nav"><button type="button" class="btn btn-outline" data-prev>← Kembali</button><button type="button" class="btn btn-primary" data-next>Lanjut →</button></div>
-  </div>
-
-  <div class="panel" data-p="3">
     <fieldset class="fieldset"><legend>Kontak</legend><div class="form-grid">
       <div><label class="f" for="nama">Nama <i>*</i></label><input class="input" id="nama" name="nama" required autocomplete="name" placeholder="Nama Anda"></div>
-      <div><label class="f" for="hp">Nomor WhatsApp <i>*</i></label><input class="input" id="hp" name="hp" required inputmode="tel" autocomplete="tel" placeholder="08xxxxxxxxxx"></div>
       <div class="full loc-box"><label class="f">Lokasi mobil <i>*</i></label>
         <div class="loc-map" id="locMap" aria-label="Peta lokasi"><div class="loc-ph">${inl(icon.pin(20))} Peta dan tingkat presisi lokasi tampil di sini</div></div>
+        <div class="map-tip" id="mapTip">Geser peta atau pin sampai tepat di posisi mobil</div>
+        <button type="button" class="btn btn-primary map-done" id="mapDone">Selesai, pakai titik ini</button>
         <div class="loc-acc" id="locAcc" hidden><b id="locAccTxt"></b><div class="bar"><i></i></div></div>
         <button type="button" class="btn btn-primary btn-block" id="btnLoc">${inl(icon.pin(18))} Bagikan lokasi saya</button>
         <div class="hint" id="locStatus">Tekan tombol di atas saat Anda berada di dekat mobil. Tidak perlu mengetik alamat.</div>
@@ -586,12 +582,17 @@ for (const p of posts) {
         <button type="button" class="link-btn" id="btnAlamat" aria-expanded="false">Tidak bisa bagikan lokasi? Ketik alamat saja</button>
         <div id="alamatWrap" hidden><textarea class="input mt12" id="alamat" name="alamat" rows="2" placeholder="Nama jalan, nomor rumah, atau patokan"></textarea></div>
       </div>
-      <div><label class="f" for="kota">Wilayah</label><select class="input" id="kota" name="kota"><option value="">Pilih wilayah</option>${c.area.map((a) => `<option>${esc(a)}</option>`).join('')}<option>Di luar daftar</option></select></div>
     </div></fieldset>
-    <fieldset class="fieldset"><legend>Mobil</legend><div class="form-grid">
-      <div><label class="f" for="merk">Merek & tipe</label><input class="input" id="merk" name="merk" placeholder="mis. Honda HR-V"></div>
-      <div><label class="f" for="nopol">Pelat nomor</label><input class="input" id="nopol" name="nopol" placeholder="mis. B 1234 KJ"></div>
-    </div></fieldset>
+    <fieldset class="fieldset"><legend>Mobil</legend>
+      <label class="f">Jumlah mobil</label>
+      <div class="cnt-row">
+        <label class="cnt"><input type="radio" name="jml" value="1" checked><span><b>1 Mobil</b><small>&nbsp;</small></span></label>
+        <label class="cnt"><input type="radio" name="jml" value="2"><span><b>2 Mobil</b><small>Diskon 10%</small></span></label>
+        <label class="cnt"><input type="radio" name="jml" value="3"><span><b>3 Mobil</b><small>Diskon 15%</small></span></label>
+      </div>
+      <p class="hint">Lebih dari 3 mobil? <a href="${waChat}" target="_blank" rel="noopener">Pesan lewat chat WhatsApp</a>.</p>
+      <div id="carList"></div><datalist id="dlMerek"></datalist>
+    </fieldset>
     <fieldset class="fieldset"><legend>Waktu kedatangan</legend><div class="form-grid">
       <div><label class="f" for="tanggal" id="lblTanggal">Tanggal <i>*</i></label><input class="input" type="date" id="tanggal" name="tanggal" required></div>
       <div><label class="f" for="jam">Jam <i>*</i></label><select class="input" id="jam" name="jam" required><option value="">Pilih jam</option>${c.jamPilihan.map((j) => `<option>${j}</option>`).join('')}</select></div>
@@ -603,11 +604,11 @@ for (const p of posts) {
       <div class="full"><label class="f" for="catatan">Catatan untuk tim</label><input class="input" id="catatan" name="catatan" placeholder="mis. mobil di basement B2, akses lewat pintu samping"></div>
       <div><label class="f" for="promo">Kode promo</label><input class="input" id="promo" name="promo" placeholder="Bila ada"></div>
     </div></fieldset>
-    <div class="err-msg" data-err="3">Isi dulu kolom yang bertanda *.</div>
+    <div class="err-msg" data-err="2">Isi dulu kolom yang bertanda *.</div>
     <div class="form-nav"><button type="button" class="btn btn-outline" data-prev>← Kembali</button>${B.aktif ? '<button type="submit" class="btn btn-primary">Lanjut bayar →</button>' : `<button type="submit" class="btn btn-wa">${icon.wa(18)} Kirim ke WhatsApp</button>`}</div>
   </div>
 ${B.aktif ? `
-  <div class="panel" data-p="4">
+  <div class="panel" data-p="3">
     <div class="pay-sum" id="paySum"></div>
     <div id="payBox">
       <div class="pay-tabs" role="tablist">${B.qris ? '<button type="button" role="tab" class="pay-tab" data-pay="qris">QRIS</button>' : ''}${B.rek ? '<button type="button" role="tab" class="pay-tab" data-pay="transfer">Transfer</button>' : ''}</div>
@@ -631,7 +632,6 @@ ${B.aktif ? `
 </form>
 <aside class="card shadow summary" aria-live="polite"><h3>Pesanan Anda</h3><div id="sumBody"><p class="empty">Belum ada layanan yang dipilih.</p></div>
   <div class="total"><span>Perkiraan biaya</span><span id="sumTotal">—</span></div>
-  <p class="hint">${B.aktif ? `Booking ${B.persen}% dibayar saat pesan untuk mengunci jadwal; sisanya setelah pekerjaan dicek.` : 'Biaya akhir dikonfirmasi admin lewat WhatsApp. Pembayaran setelah pekerjaan dicek.'}</p>
   <p class="hint">Ada pertanyaan? <a href="${waChat}" target="_blank" rel="noopener">Chat ${esc(c.whatsappDisplay)}</a></p>
 </aside>
 </div></section>
