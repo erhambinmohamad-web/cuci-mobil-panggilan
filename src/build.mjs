@@ -28,6 +28,7 @@ const detail = Object.fromEntries(H.detailing.map((d) => [d.id, d]));
 const SIZES = c.ukuran.slice(0, 3);
 const posts = [...extraPosts(c, rp), ...basePosts];
 const perCuci = (p) => Math.round(p.harga / parseInt(p.frekuensi, 10) / 50) * 50;
+const igIcon = '<svg class="ig" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="display:inline;vertical-align:-3px"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>';
 const inl = (svg) => svg.replace('<svg', '<svg style="display:inline;vertical-align:-2px"');
 
 // Alamat halaman
@@ -99,7 +100,7 @@ function footer() {
   <div><h4>Kontak</h4><ul>
     <li><a href="${waChat}" target="_blank" rel="noopener">WhatsApp ${esc(c.whatsappDisplay)}</a></li>
     ${c.email ? `<li><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></li>` : ''}
-    ${c.instagram ? `<li><a href="https://instagram.com/${esc(c.instagram)}" target="_blank" rel="noopener">Instagram @${esc(c.instagram)}</a></li>` : ''}
+    ${c.instagram ? `<li><a href="https://www.instagram.com/${esc(c.instagram)}/" target="_blank" rel="noopener">${igIcon} Instagram @${esc(c.instagram)}</a></li>` : ''}
     ${c.googleReview ? `<li><a href="${esc(c.googleReview)}" target="_blank" rel="noopener"><span class="star" aria-hidden="true">★</span> Beri ulasan di Google</a></li>` : ''}
   </ul></div>
 </div>
@@ -119,6 +120,7 @@ const ldBusiness = {
   areaServed: c.area.map((a) => ({ '@type': 'City', name: a })),
   priceRange: `${rp(H.sekaliCuci[0].harga)} – ${rp(detail.complete.harga[2])}`,
   openingHours: 'Mo-Su 06:00-18:00',
+  ...(c.instagram ? { sameAs: [`https://www.instagram.com/${c.instagram}/`] } : {}),
 };
 
 const sitemap = [];
@@ -503,6 +505,7 @@ page({
   <h2>Area layanan</h2>
   <p>${esc(c.area.join(', '))}. Rincian kelurahan ada di halaman <a href="${u(P.area)}">area layanan</a>.</p>
   ${c.googleReview ? `<div class="review-box mt40"><div><h2>Sudah pernah memakai ${esc(c.brand)}?</h2><p class="mb0">Ceritakan pengalaman Anda di Google. Ulasan Anda membantu calon pelanggan lain dan membantu kami terus memperbaiki layanan.</p></div><a class="btn btn-review" href="${esc(c.googleReview)}" target="_blank" rel="noopener"><span class="star" aria-hidden="true">★</span> Beri ulasan di Google</a></div>` : ''}
+  ${c.instagram ? `<div class="review-box mt24"><div><h2>Lihat hasil kerja kami</h2><p class="mb0">Foto sebelum–sesudah, promo, dan jadwal tim terbaru kami bagikan di Instagram.</p></div><a class="btn btn-review" href="https://www.instagram.com/${esc(c.instagram)}/" target="_blank" rel="noopener">${igIcon.replace('width="16" height="16"', 'width="20" height="20"').replace('vertical-align:-3px', 'vertical-align:-4px;color:#d6249f')} Ikuti @${esc(c.instagram)}</a></div>` : ''}
 </div></section>
 ${ctaBand()}`,
 });
