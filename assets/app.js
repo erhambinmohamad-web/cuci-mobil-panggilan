@@ -41,24 +41,63 @@
   var rp = function (n) { return 'Rp' + Number(n).toLocaleString('id-ID'); };
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
+  var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var HARI = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-  var step = 1;
+  var DISKON = { 1: 0, 2: 10, 3: 15 };
+  var step = 1, LAST = S.bayar ? 3 : 2;
   var q = new URLSearchParams(location.search);
+
+  // Daftar mobil → ukuran (0 kecil, 1 sedang, 2 besar, 3 ekstra/mewah)
+  var MOBIL = {
+    'Toyota': 'Kijang:1,Agya:0,Yaris:0,Calya:1,Avanza:1,Veloz:1,Rush:1,Raize:1,Sienta:1,Vios:1,Yaris Cross:1,Corolla Cross:1,Corolla Altis:1,C-HR:1,Camry:1,bZ4X:1,Kijang Innova:2,Innova Zenix:2,Innova:2,Fortuner:2,Voxy:2,Alphard:2,Vellfire:2,Hilux:2,Land Cruiser:3,HiAce:3',
+    'Daihatsu': 'Ayla:0,Sirion:0,Sigra:1,Xenia:1,Terios:1,Rocky:1,Luxio:1,Gran Max:1',
+    'Honda': 'Brio:0,Jazz:0,City Hatchback:0,City:1,Civic:1,Accord:1,Mobilio:1,BR-V:1,HR-V:1,WR-V:1,Freed:1,CR-V:2,Odyssey:2',
+    'Suzuki': 'Karimun Wagon R:0,S-Presso:0,Ignis:0,Swift:0,Baleno:0,Celerio:0,Ertiga:1,XL7:1,Jimny:1,Grand Vitara:1,APV:1,Carry:1',
+    'Mitsubishi': 'Mirage:0,Xpander:1,Xpander Cross:1,Xforce:1,Outlander:2,Pajero Sport:2,Triton:2,Destinator:2',
+    'Nissan': 'March:0,Livina:1,Grand Livina:1,Kicks:1,Magnite:1,Juke:1,Serena:2,X-Trail:2,Terra:2,Navara:2',
+    'Wuling': 'Air ev:0,Binguo:0,Confero:1,Cortez:1,Alvez:1,Formo:1,Cloud EV:1,Almaz:2',
+    'Hyundai': 'Creta:1,Stargazer:1,Kona:1,Ioniq 6:1,Ioniq 5:2,Santa Fe:2,Palisade:2,Staria:2',
+    'Kia': 'Picanto:0,Sonet:1,Seltos:1,Carens:1,Sorento:2,Carnival:2,EV6:2',
+    'Mazda': 'Mazda2:0,Mazda3:1,CX-3:1,CX-30:1,CX-5:2,CX-60:2,CX-8:2',
+    'Chery': 'Omoda 5:1,Omoda E5:1,Tiggo 2 Pro:1,Tiggo 5x:1,Tiggo 7 Pro:2,Tiggo 8 Pro:2,J6:1',
+    'BYD': 'Dolphin:0,Atto 1:0,Atto 3:1,Seal:1,M6:2,Sealion 7:2',
+    'MG': 'MG 4 EV:1,MG ZS:1,MG 5:1,MG HS:2',
+    'DFSK': 'Gelora:1,Glory 560:1,Glory i-Auto:1,Seres E1:0',
+    'Isuzu': 'Panther:1,MU-X:2,D-Max:2',
+    'Ford': 'EcoSport:1,Fiesta:0,Everest:2,Ranger:2',
+    'Chevrolet': 'Spark:0,Spin:1,Trax:1,Captiva:2,Trailblazer:2',
+    'Datsun': 'GO:0,GO+:1,Cross:1',
+    'Renault': 'Kwid:0,Triber:1,Kiger:1',
+    'Peugeot': '2008:1,3008:2,5008:2'
+  };
+  var MEWAH = ['BMW', 'Mercedes-Benz', 'Lexus', 'Audi', 'Porsche', 'Volvo', 'Land Rover', 'MINI', 'Jaguar', 'Volkswagen', 'Tesla', 'Subaru', 'Jeep'];
+  MEWAH.forEach(function (m) { if (!MOBIL[m]) MOBIL[m] = ''; });
+  var MEREK = Object.keys(MOBIL).sort();
+  function tipeOf(merek) { var raw = MOBIL[merek]; return raw ? raw.split(',').map(function (x) { var p = x.split(':'); return { n: p[0], u: +p[1] }; }) : []; }
+  function cariMerek(t) { t = t.trim().toLowerCase(); return MEREK.filter(function (m) { return m.toLowerCase() === t; })[0] || ''; }
+  function ukuranDari(merekTxt, tipeTxt) {
+    var m = cariMerek(merekTxt); if (!m) return -1;
+    if (MEWAH.indexOf(m) > -1) return 3;
+    var t = tipeTxt.trim().toLowerCase(); if (!t) return -1;
+    var cocok = tipeOf(m).filter(function (x) { var n = x.n.toLowerCase(); return t === n || t.indexOf(n + ' ') === 0; })
+      .sort(function (a, b) { return b.n.length - a.n.length; })[0];
+    return cocok ? cocok.u : -1;
+  }
+  $('#dlMerek').innerHTML = MEREK.map(function (m) { return '<option value="' + esc(m) + '">'; }).join('');
 
   function opt(type, name, value, title, small, price, checked) {
     return '<label class="opt"><input type="' + type + '" name="' + name + '" value="' + value + '"' + (checked ? ' checked' : '') + '>' +
       '<span class="box"><b>' + title + '</b>' + (small ? '<small>' + small + '</small>' : '') + (price ? '<span class="p">' + price + '</span>' : '') + '</span></label>';
   }
-  function sizeOpts(pre) {
-    return '<fieldset class="fieldset"><legend>Ukuran mobil</legend><div class="opt-grid c4">' +
-      S.ukuran.map(function (u, i) { return opt('radio', 'ukuran', i, u.nama, u.contoh, '', pre === u.id); }).join('') + '</div></fieldset>';
-  }
   function layanan() { var r = $('input[name=layanan]:checked'); return r ? r.value : ''; }
   function val(name) { var r = $('input[name=' + name + ']:checked'); return r ? r.value : ''; }
   function vals(name) { return $$('input[name=' + name + ']:checked').map(function (x) { return x.value; }); }
+  function perluUkuran() { var l = layanan(); return l === 'detailing' || l === 'banjir'; }
 
+  // ---- Langkah 1: paket sesuai layanan ----
+  var preUk = q.get('ukuran');
   function renderStep2() {
-    var l = layanan(), h = '', pk = q.get('paket'), uk = q.get('ukuran');
+    var l = layanan(), h = '', pk = q.get('paket');
     if (l === 'langganan') {
       h = '<fieldset class="fieldset"><legend>Paket Kilap mana?</legend><div class="opt-grid c3">' +
         H.langganan.map(function (p) { return opt('radio', 'paket', p.id, p.nama + (p.label ? ' · ' + p.label : ''), p.frekuensi + ' (' + p.perMinggu + 'x seminggu) · ' + p.sampo + ' · fogging hemat ' + p.diskonFogging + '%', rp(p.harga) + '/bulan', pk === p.id); }).join('') +
@@ -71,18 +110,17 @@
     } else if (l === 'detailing') {
       h = '<fieldset class="fieldset"><legend>Perawatan yang diinginkan (boleh lebih dari satu)</legend><div class="opt-grid c3">' +
         H.detailing.map(function (d) { return opt('checkbox', 'det', d.id, d.nama, d.id === 'complete' ? 'Gabungan 5 perawatan, lebih murah' : '', 'mulai ' + rp(d.harga[0]), pk === d.id); }).join('') +
-        '</div></fieldset>' + sizeOpts(uk);
+        '</div></fieldset><p class="hint">Harga mengikuti ukuran mobil, otomatis terhitung setelah Anda mengisi merek & tipe mobil di langkah 2.</p>';
     } else if (l === 'banjir') {
-      h = sizeOpts(uk).replace('Ukuran mobil</legend>', 'Ukuran mobil <small class="muted">(lokasi perlu listrik min. 2.000 watt)</small></legend>') +
-        '<fieldset class="fieldset"><legend>Setinggi apa air masuk ke kabin?</legend><div class="opt-grid c3">' +
-        H.banjir.level.map(function (lv, i) { return opt('radio', 'level', i, lv, H.banjir.durasi[i], ''); }).join('') + '</div></fieldset>';
+      h = '<fieldset class="fieldset"><legend>Setinggi apa air masuk ke kabin?</legend><div class="opt-grid c3">' +
+        H.banjir.level.map(function (lv, i) { return opt('radio', 'level', i, lv, H.banjir.durasi[i], ''); }).join('') + '</div></fieldset>' +
+        '<p class="hint">Lokasi perlu listrik min. 2.000 watt. Harga mengikuti ukuran mobil yang Anda isi di langkah 2.</p>';
     }
     $('#step2').innerHTML = h;
     q = new URLSearchParams(); // prefill hanya sekali
     syncComplete();
     update();
   }
-
   function syncComplete() {
     var all = $$('input[name=det]');
     var comp = all.filter(function (x) { return x.value === 'complete'; })[0];
@@ -90,6 +128,118 @@
     all.forEach(function (x) {
       if (x !== comp) { x.disabled = comp.checked; if (comp.checked) x.checked = false; x.parentElement.style.opacity = comp.checked ? .45 : 1; }
     });
+  }
+
+  // ---- Langkah 2: daftar mobil ----
+  var ukNama = S.ukuran.map(function (u) { return u.nama; });
+  function renderCars() {
+    var n = +val('jml') || 1, list = $('#carList'), ada = $$('.car-row', list);
+    for (var i = ada.length; i < n; i++) {
+      var row = document.createElement('div'); row.className = 'car-row'; row.dataset.i = i;
+      row.innerHTML = '<span class="car-no">' + (i + 1) + '</span>' +
+        '<div class="car-f"><label class="f" for="merek' + i + '">Merek <i>*</i></label><input class="input car-merek" id="merek' + i + '" list="dlMerek" placeholder="Cari mobil" autocomplete="off"></div>' +
+        '<div class="car-f"><label class="f" for="tipe' + i + '">Tipe <i>*</i></label><input class="input car-tipe" id="tipe' + i + '" list="dlTipe' + i + '" placeholder="Cari tipe" autocomplete="off"><datalist id="dlTipe' + i + '"></datalist></div>' +
+        '<div class="car-size"></div>';
+      list.appendChild(row);
+    }
+    ada = $$('.car-row', list);
+    ada.forEach(function (r, i) { r.hidden = i >= n; });
+    ada.forEach(cekMobil);
+  }
+  function cekMobil(row) {
+    var mi = $('.car-merek', row), ti = $('.car-tipe', row), box = $('.car-size', row), i = +row.dataset.i;
+    var m = cariMerek(mi.value);
+    $('#dlTipe' + i).innerHTML = m ? tipeOf(m).map(function (x) { return '<option value="' + esc(x.n) + '">'; }).join('') : '';
+    var u = ukuranDari(mi.value, ti.value);
+    row.dataset.auto = u;
+    if (u > -1) { box.innerHTML = 'Ukuran: <span class="size-chip">' + esc(ukNama[u]) + '</span>' + (u === 3 ? ' · harga lewat chat' : ''); return; }
+    if (mi.value.trim() && ti.value.trim()) {
+      var sel = $('select', box), cur = sel ? sel.value : (i === 0 && preUk ? String(S.ukuran.map(function (x) { return x.id; }).indexOf(preUk)) : '');
+      box.innerHTML = '<label class="f" for="uk' + i + '">Ukuran mobil ini?' + (perluUkuran() ? ' <i>*</i>' : '') + '</label><select class="input" id="uk' + i + '"><option value="">Pilih ukuran</option>' +
+        S.ukuran.map(function (x, k) { return '<option value="' + k + '"' + (cur === String(k) ? ' selected' : '') + '>' + esc(x.nama + ' — ' + x.contoh.split(' — ')[0]) + '</option>'; }).join('') + '</select>';
+    } else box.innerHTML = '';
+  }
+  function cars() {
+    var n = +val('jml') || 1;
+    return $$('.car-row').slice(0, n).map(function (r) {
+      var u = +r.dataset.auto, sel = $('select', r);
+      if (!(u > -1) && sel && sel.value !== '') u = +sel.value;
+      if (!(u > -1)) u = -1;
+      var mk = $('.car-merek', r).value.trim(), tp = $('.car-tipe', r).value.trim();
+      return { merek: mk, tipe: tp, ui: u, label: (mk + ' ' + tp).trim() };
+    });
+  }
+
+  // ---- Hitung ringkasan ----
+  function calc() {
+    var l = layanan(), rows = [], total = 0, konsul = false, C = cars(), n = C.length;
+    var tag = function (k) { return n > 1 ? 'Mobil ' + (k + 1) + (C[k].label ? ' · ' + C[k].label : '') + ' – ' : ''; };
+    var kali = n > 1 ? ' × ' + n + ' mobil' : '';
+    if (l === 'langganan') {
+      var p = H.langganan.filter(function (x) { return x.id === val('paket'); })[0];
+      if (p) { rows.push([p.nama + ' (' + p.frekuensi + ')' + kali, p.harga * n]); total += p.harga * n; }
+    } else if (l === 'sekali') {
+      var s = H.sekaliCuci.filter(function (x) { return x.id === val('paket'); })[0];
+      if (s) { rows.push(['Cuci sekali datang – ' + s.nama + kali, s.harga * n]); total += s.harga * n; }
+      vals('addon').forEach(function (id) { var a = H.addOn.filter(function (x) { return x.id === id; })[0]; rows.push(['+ ' + a.nama + kali, a.harga * n]); total += a.harga * n; });
+    } else if (l === 'detailing') {
+      vals('det').forEach(function (id) {
+        var d = H.detailing.filter(function (x) { return x.id === id; })[0];
+        C.forEach(function (c, k) {
+          if (c.ui < 0) rows.push([tag(k) + d.nama, null]);
+          else if (c.ui > 2) { rows.push([tag(k) + d.nama + ' (' + ukNama[3] + ')', 'Lewat chat']); konsul = true; }
+          else { rows.push([tag(k) + d.nama + ' (' + ukNama[c.ui] + ')', d.harga[c.ui]]); total += d.harga[c.ui]; }
+        });
+      });
+    } else if (l === 'banjir') {
+      var lv = val('level');
+      if (lv !== '') C.forEach(function (c, k) {
+        if (c.ui < 0) rows.push([tag(k) + 'Pascabanjir – ' + H.banjir.level[+lv].toLowerCase(), null]);
+        else if (c.ui > 2) { rows.push([tag(k) + 'Pascabanjir (' + ukNama[3] + ')', 'Lewat chat']); konsul = true; }
+        else { var hb = H.banjir.harga[c.ui][+lv]; rows.push([tag(k) + 'Pascabanjir – ' + H.banjir.level[+lv].toLowerCase() + ' (' + ukNama[c.ui] + ')', hb]); total += hb; }
+      });
+    }
+    var pct = DISKON[n] || 0;
+    if (pct && total) { var dis = Math.round(total * pct / 100 / 1000) * 1000; rows.push(['Diskon ' + n + ' mobil (' + pct + '%)', -dis]); total -= dis; }
+    return { rows: rows, total: total, konsul: konsul, per: l === 'langganan' ? '/bulan' : '', cars: C };
+  }
+  function fmt(v) { return v === null ? 'isi data mobil' : typeof v === 'number' ? (v < 0 ? '−' + rp(-v) : rp(v)) : v; }
+  function update() {
+    var r = calc();
+    $('#sumBody').innerHTML = r.rows.length ? r.rows.map(function (x) {
+      return '<div class="row"><span>' + esc(x[0]) + '</span><span>' + fmt(x[1]) + '</span></div>';
+    }).join('') : '<p class="empty">Belum ada paket yang dipilih.</p>';
+    $('#sumTotal').textContent = r.total ? rp(r.total) + r.per + (r.konsul ? ' + harga lewat chat' : '') : (r.konsul ? 'Lewat chat' : '—');
+  }
+
+  function err(n, msg) { var e = $('[data-err="' + n + '"]'); if (msg) e.textContent = msg; e.classList.toggle('on', !!msg || msg === undefined); }
+  function clearErr() { $$('.err-msg').forEach(function (e) { e.classList.remove('on'); }); $$('.input.err').forEach(function (e) { e.classList.remove('err'); }); }
+
+  function validate(n) {
+    clearErr();
+    var l = layanan();
+    if (n === 1) {
+      if (!l) return err(1, 'Pilih salah satu layanan dulu.'), false;
+      if ((l === 'langganan' || l === 'sekali') && !val('paket')) return err(1, 'Pilih salah satu paket dulu.'), false;
+      if (l === 'detailing' && !vals('det').length) return err(1, 'Centang minimal satu perawatan.'), false;
+      if (l === 'banjir' && val('level') === '') return err(1, 'Pilih setinggi apa air masuk ke kabin.'), false;
+    }
+    if (n === 2) {
+      var ok = true;
+      $$('[data-p="2"] [required]').forEach(function (f) { if (!f.value.trim()) { f.classList.add('err'); ok = false; } });
+      $$('.car-row').slice(0, +val('jml') || 1).forEach(function (r) { $$('.car-merek, .car-tipe', r).forEach(function (f) { if (!f.value.trim()) { f.classList.add('err'); ok = false; } }); });
+      if (!ok) { err(2, 'Isi dulu kolom yang bertanda *.'); return false; }
+      if (perluUkuran()) {
+        var kosong = cars().map(function (c, i) { return c.ui < 0 ? i + 1 : 0; }).filter(Boolean);
+        if (kosong.length) { kosong.forEach(function (k) { var s = $('#uk' + (k - 1)); if (s) s.classList.add('err'); }); err(2, 'Pilih ukuran untuk mobil ' + kosong.join(' & ') + '.'); return false; }
+      }
+      if (l === 'langganan') {
+        var max = +$('#hariList').dataset.max || 1;
+        if (vals('hari').length !== max) { err(2, 'Centang tepat ' + max + ' hari rutin sesuai paket.'); return false; }
+      }
+      if (!$('#maps').value && !$('#alamat').value.trim()) { $('#btnLoc').classList.add('err'); err(2, 'Bagikan lokasi atau ketik alamat dulu.'); return false; }
+    }
+    return true;
   }
 
   function renderHari() {
@@ -105,73 +255,12 @@
     $('#hariList').dataset.max = n;
   }
 
-  // Hitung ringkasan
-  function calc() {
-    var l = layanan(), rows = [], total = 0, konsul = false, uk = val('ukuran');
-    var ui = uk === '' ? -1 : +uk;
-    if (l === 'langganan') {
-      var p = H.langganan.filter(function (x) { return x.id === val('paket'); })[0];
-      if (p) { rows.push([p.nama + ' (' + p.frekuensi + ')', p.harga, '/bulan']); total += p.harga; }
-    } else if (l === 'sekali') {
-      var s = H.sekaliCuci.filter(function (x) { return x.id === val('paket'); })[0];
-      if (s) { rows.push(['Cuci sekali datang – ' + s.nama, s.harga]); total += s.harga; }
-      vals('addon').forEach(function (id) { var a = H.addOn.filter(function (x) { return x.id === id; })[0]; rows.push(['+ ' + a.nama, a.harga]); total += a.harga; });
-    } else if (l === 'detailing') {
-      vals('det').forEach(function (id) {
-        var d = H.detailing.filter(function (x) { return x.id === id; })[0];
-        if (ui < 0) rows.push([d.nama, null]);
-        else if (ui > 2) { rows.push([d.nama + ' (' + S.ukuran[3].nama + ')', 'Lewat chat']); konsul = true; }
-        else { rows.push([d.nama + ' (' + S.ukuran[ui].nama + ')', d.harga[ui]]); total += d.harga[ui]; }
-      });
-    } else if (l === 'banjir') {
-      var lv = val('level');
-      if (ui > 2) { rows.push(['Pascabanjir (' + S.ukuran[3].nama + ')', 'Lewat chat']); konsul = true; }
-      else if (ui > -1 && lv !== '') { var hb = H.banjir.harga[ui][+lv]; rows.push(['Pascabanjir – ' + H.banjir.level[+lv].toLowerCase() + ' (' + S.ukuran[ui].nama + ')', hb]); total += hb; }
-    }
-    return { rows: rows, total: total, konsul: konsul, per: l === 'langganan' ? '/bulan' : '' };
-  }
-
-  function update() {
-    var r = calc();
-    $('#sumBody').innerHTML = r.rows.length ? r.rows.map(function (x) {
-      return '<div class="row"><span>' + x[0] + '</span><span>' + (x[1] === null ? 'pilih ukuran' : typeof x[1] === 'number' ? rp(x[1]) : x[1]) + '</span></div>';
-    }).join('') : '<p class="empty">Belum ada layanan yang dipilih.</p>';
-    $('#sumTotal').textContent = r.total ? rp(r.total) + r.per + (r.konsul ? ' + harga lewat chat' : '') : (r.konsul ? 'Lewat chat' : '—');
-  }
-
-  function err(n, msg) { var e = $('[data-err="' + n + '"]'); if (msg) e.textContent = msg; e.classList.toggle('on', !!msg || msg === undefined); }
-  function clearErr() { $$('.err-msg').forEach(function (e) { e.classList.remove('on'); }); $$('.input.err').forEach(function (e) { e.classList.remove('err'); }); }
-
-  function validate(n) {
-    clearErr();
-    var l = layanan();
-    if (n === 1 && !l) { err(1); return false; }
-    if (n === 2) {
-      if ((l === 'langganan' || l === 'sekali') && !val('paket')) return err(2, 'Pilih salah satu paket dulu.'), false;
-      if (l === 'detailing' && !vals('det').length) return err(2, 'Centang minimal satu perawatan.'), false;
-      if ((l === 'detailing' || l === 'banjir') && val('ukuran') === '') return err(2, 'Pilih ukuran mobil.'), false;
-      if (l === 'banjir' && val('level') === '') return err(2, 'Pilih setinggi apa air masuk ke kabin.'), false;
-    }
-    if (n === 3) {
-      var ok = true;
-      $$('[data-p="3"] [required]').forEach(function (f) { if (!f.value.trim()) { f.classList.add('err'); ok = false; } });
-      var hp = $('#hp'); if (hp.value && !/^(\+?62|0)8\d{7,12}$/.test(hp.value.replace(/[\s-]/g, ''))) { hp.classList.add('err'); ok = false; err(3, 'Nomor WhatsApp belum benar. Contoh: 081234567890.'); return false; }
-      if (l === 'langganan') {
-        var max = +$('#hariList').dataset.max || 1;
-        if (vals('hari').length !== max) { err(3, 'Centang tepat ' + max + ' hari rutin sesuai paket.'); return false; }
-      }
-      if (!ok) { err(3, 'Isi dulu kolom yang bertanda *.'); return false; }
-      if (!$('#maps').value && !$('#alamat').value.trim()) { $('#btnLoc').classList.add('err'); err(3, 'Bagikan lokasi atau ketik alamat dulu.'); return false; }
-    }
-    return true;
-  }
-
   function go(n) {
     step = n;
     $$('.panel').forEach(function (p) { p.classList.toggle('on', +p.dataset.p === n); });
     $$('.stepper li').forEach(function (li) { li.classList.toggle('on', +li.dataset.s <= n); });
-    if (n === 3) renderHari();
-    if (n === 4) renderBayar();
+    if (n === 2) { renderHari(); renderCars(); }
+    if (n === 3) renderBayar();
     form.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -179,6 +268,8 @@
     var t = e.target;
     if (t.name === 'layanan') renderStep2();
     if (t.name === 'det') syncComplete();
+    if (t.name === 'jml') renderCars();
+    if (t.classList.contains('car-merek')) { var cm = cariMerek(t.value); if (cm) t.value = cm; cekMobil(t.closest('.car-row')); }
     if (t.name === 'hari') {
       var max = +$('#hariList').dataset.max || 1, sel = vals('hari');
       if (sel.length > max) t.checked = false;
@@ -186,11 +277,16 @@
     if (t.classList.contains('input')) t.classList.remove('err');
     update();
   });
+  form.addEventListener('input', function (e) {
+    var row = e.target.closest && e.target.closest('.car-row');
+    if (row && (e.target.classList.contains('car-merek') || e.target.classList.contains('car-tipe'))) { e.target.classList.remove('err'); cekMobil(row); update(); }
+  });
   $$('[data-next]').forEach(function (b) { b.addEventListener('click', function () { if (validate(step)) go(step + 1); }); });
   $$('[data-prev]').forEach(function (b) { b.addEventListener('click', function () { clearErr(); go(step - 1); }); });
 
-  // Bagikan lokasi (GPS ponsel) + peta presisi, atau ketik alamat
+  // ---- Lokasi: GPS + peta (di HP, ketuk peta untuk layar penuh) ----
   var btnLoc = $('#btnLoc'), locStatus = $('#locStatus'), peta = null, pin = null, lingkar = null, pantau = null, terbaik = null;
+  var hp = window.matchMedia('(max-width: 720px)');
   function bukaAlamat(pesan) { $('#alamatWrap').hidden = false; $('#btnAlamat').setAttribute('aria-expanded', 'true'); if (pesan) locStatus.textContent = pesan; $('#alamat').focus(); }
   $('#btnAlamat').addEventListener('click', function () { bukaAlamat(); });
   function muatLeaflet(cb) {
@@ -206,6 +302,28 @@
     $('#locAccTxt').textContent = teks + (manual ? '' : ' · ± ' + Math.round(m) + ' m');
     box.querySelector('.bar i').style.width = (manual ? 100 : Math.max(8, Math.min(100, 100 - (m - 5) * 0.8))) + '%';
   }
+  var penuh = false;
+  function interaktif(on) {
+    if (!peta) return;
+    ['dragging', 'touchZoom', 'doubleClickZoom', 'scrollWheelZoom', 'boxZoom', 'keyboard'].forEach(function (h) { if (peta[h]) peta[h][on ? 'enable' : 'disable'](); });
+    if (pin && pin.dragging) pin.dragging[on ? 'enable' : 'disable']();
+  }
+  function aturMode() { interaktif(penuh || !hp.matches); var t = $('.map-tap'); if (t) t.hidden = penuh || !hp.matches; }
+  function bukaPenuh() {
+    if (!peta || penuh) return;
+    penuh = true; $('#locMap').classList.add('full'); document.body.classList.add('map-open'); aturMode();
+    try { history.pushState({ peta: 1 }, ''); } catch (e) {}
+    setTimeout(function () { peta.invalidateSize(); peta.setView(pin.getLatLng(), Math.max(peta.getZoom(), 18)); }, 60);
+  }
+  function tutupPenuh(dariBack) {
+    if (!penuh) return;
+    penuh = false; $('#locMap').classList.remove('full'); document.body.classList.remove('map-open'); aturMode();
+    setTimeout(function () { peta.invalidateSize(); peta.setView(pin.getLatLng(), peta.getZoom()); }, 60);
+    if (!dariBack) { try { if (history.state && history.state.peta) history.back(); } catch (e) {} }
+  }
+  $('#mapDone').addEventListener('click', function () { tutupPenuh(false); });
+  window.addEventListener('popstate', function () { if (penuh) tutupPenuh(true); });
+  if (hp.addEventListener) hp.addEventListener('change', aturMode);
   function gambarPeta(lat, lng, acc) {
     var el = $('#locMap');
     if (!window.L) { el.innerHTML = '<div class="loc-ph">Peta tidak bisa dimuat, lokasi tetap tersimpan.</div>'; return; }
@@ -217,8 +335,12 @@
       lingkar = L.circle([lat, lng], { radius: acc, color: '#0b7285', weight: 2, fillColor: '#14a3b8', fillOpacity: .18 }).addTo(peta);
       pin = L.marker([lat, lng], { draggable: true }).addTo(peta);
       pin.on('dragend', function () { var p = pin.getLatLng(); if (pantau !== null) { navigator.geolocation.clearWatch(pantau); pantau = null; } lingkar.setLatLng(p).setRadius(5); simpan(p.lat, p.lng); tampilAkurasi(0, true); locStatus.textContent = 'Titik dipindah manual. Pastikan pin tepat di lokasi mobil.'; });
+      peta.on('click', function (e) { if (!penuh && hp.matches) return; pin.setLatLng(e.latlng); pin.fire('dragend'); });
+      var tap = document.createElement('button'); tap.type = 'button'; tap.className = 'map-tap'; tap.innerHTML = '<span>Ketuk untuk perbesar peta</span>';
+      L.DomEvent.disableClickPropagation(tap); tap.addEventListener('click', function (e) { e.stopPropagation(); bukaPenuh(); }); el.appendChild(tap);
+      aturMode();
     } else { pin.setLatLng([lat, lng]); lingkar.setLatLng([lat, lng]).setRadius(acc); }
-    peta.fitBounds(lingkar.getBounds(), { maxZoom: 18, padding: [20, 20] });
+    if (!penuh) peta.fitBounds(lingkar.getBounds(), { maxZoom: 18, padding: [20, 20] });
   }
   btnLoc.addEventListener('click', function () {
     btnLoc.classList.remove('err');
@@ -232,7 +354,7 @@
         if (terbaik && c.accuracy >= terbaik.accuracy) return;
         terbaik = c; simpan(c.latitude, c.longitude); gambarPeta(c.latitude, c.longitude, c.accuracy); tampilAkurasi(c.accuracy);
         btnLoc.disabled = false; btnLoc.classList.add('done'); btnLoc.lastChild.textContent = ' Lokasi tersimpan (ketuk untuk ulang)';
-        locStatus.textContent = c.accuracy <= 20 ? 'Lokasi sudah presisi. Geser pin bila belum tepat di mobil.' : 'Masih mempertajam lokasi… atau geser pin ke posisi mobil.';
+        locStatus.textContent = c.accuracy <= 20 ? 'Lokasi sudah presisi.' + (hp.matches ? ' Ketuk peta untuk menggeser pin bila belum tepat.' : ' Geser pin bila belum tepat di mobil.') : 'Masih mempertajam lokasi…' + (hp.matches ? ' atau ketuk peta untuk menggeser pin.' : ' atau geser pin ke posisi mobil.');
         clearErr();
         if (c.accuracy <= 15 || Date.now() - mulai > 20000) { navigator.geolocation.clearWatch(pantau); pantau = null; }
       }, function (e) {
@@ -246,7 +368,6 @@
 
   var tgl = $('#tanggal');
   var d = new Date(); tgl.min = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-
   // Booking: QRIS (nominal otomatis) atau transfer
   var BY = S.bayar, bookAmt = 0, bayarVia = '';
   function crc16(str) { var x = 0xffff; for (var i = 0; i < str.length; i++) { x ^= str.charCodeAt(i) << 8; for (var j = 0; j < 8; j++) x = x & 0x8000 ? ((x << 1) ^ 0x1021) & 0xffff : (x << 1) & 0xffff; } return ('000' + x.toString(16).toUpperCase()).slice(-4); }
@@ -320,28 +441,27 @@
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    if (!validate(3)) return;
-    if (BY) go(4); else kirimWA();
+    if (!validate(2)) return;
+    if (BY) go(3); else kirimWA();
   });
   function kirimWA() {
-    var r = calc(), l = layanan(), g = function (id) { return $('#' + id).value.trim(); };
+    var r = calc(), l = layanan(), g = function (id) { var el = $('#' + id); return el ? el.value.trim() : ''; };
     var namaLayanan = { langganan: 'Langganan Kilap', sekali: 'Cuci Sekali Datang', detailing: 'Salon & Perawatan', banjir: 'Pemulihan Pascabanjir' }[l];
     var tglFmt = new Date(g('tanggal') + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    var mobil = r.cars.map(function (c, i) { return (r.cars.length > 1 ? (i + 1) + '. ' : '') + c.label + (c.ui > -1 ? ' (' + ukNama[c.ui] + ')' : ''); });
     var lines = [
       '*JADWAL BARU – ' + S.brand.toUpperCase() + '*', '',
       '*Layanan:* ' + namaLayanan,
-    ].concat(r.rows.map(function (x) { return '• ' + x[0] + (typeof x[1] === 'number' ? ' – ' + rp(x[1]) : x[1] ? ' – ' + x[1] : ''); }))
+    ].concat(r.rows.map(function (x) { return '• ' + x[0] + (x[1] === null ? '' : ' – ' + fmt(x[1])); }))
       .concat([
         '*Perkiraan biaya:* ' + (r.total ? rp(r.total) + r.per : '-') + (r.konsul ? ' (+ mobil ekstra, harga lewat chat)' : ''),
         BY && bookAmt ? '*Booking ' + BY.persen + '%:* ' + rp(bookAmt) + ' via ' + (bayarVia === 'qris' ? 'QRIS' : 'transfer ' + (($('input[name=rekBank]:checked') || {}).value || BY.rek[0].bank)) + ' (bukti bayar terlampir)' : null,
         BY && bookAmt ? '*Sisa setelah dicek:* ' + rp(r.total - bookAmt) : null,
         BY && !bookAmt ? '*Booking:* menunggu nominal dari admin' : null, '',
         '*Nama:* ' + g('nama'),
-        '*WhatsApp:* ' + g('hp'),
         g('maps') ? '*Lokasi:* ' + g('maps') : null,
         g('alamat') ? '*Alamat:* ' + g('alamat') : null,
-        g('kota') ? '*Wilayah:* ' + g('kota') : null,
-        g('merk') ? '*Mobil:* ' + g('merk') + (g('nopol') ? ' (' + g('nopol') + ')' : '') : null,
+        '*Mobil (' + r.cars.length + '):* ' + (mobil.length > 1 ? '\n' + mobil.join('\n') : mobil[0]),
         '*' + (l === 'langganan' ? 'Mulai' : 'Jadwal') + ':* ' + tglFmt + ', jam ' + g('jam'),
         l === 'langganan' ? '*Hari rutin:* ' + vals('hari').join(', ') : null,
         '*Fasilitas lokasi:* ' + g('kondisi'),
@@ -354,10 +474,11 @@
     if (w) w.opener = null; else location.href = url;
   }
 
-  // Prefill dari URL (?layanan=...&paket=...&ukuran=...)
+  // Awal: layanan dari URL (?layanan=...&paket=...&ukuran=...) atau default cuci sekali datang
   var pre = q.get('layanan');
-  if (pre) {
-    var radio = $('input[name=layanan][value="' + pre + '"]');
-    if (radio) { radio.checked = true; renderStep2(); if (form.dataset.jump !== 'no') go(2); }
-  }
+  var radio = pre && $('input[name=layanan][value="' + pre + '"]');
+  if (radio) radio.checked = true;
+  renderStep2();
+  renderCars();
+  if (radio) form.scrollIntoView({ block: 'start' });
 })();
