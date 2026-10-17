@@ -171,6 +171,7 @@
     $$('.panel').forEach(function (p) { p.classList.toggle('on', +p.dataset.p === n); });
     $$('.stepper li').forEach(function (li) { li.classList.toggle('on', +li.dataset.s <= n); });
     if (n === 3) renderHari();
+    if (n === 4) renderBayar();
     form.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -246,9 +247,83 @@
   var tgl = $('#tanggal');
   var d = new Date(); tgl.min = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 
+  // Booking: QRIS (nominal otomatis) atau transfer
+  var BY = S.bayar, bookAmt = 0, bayarVia = '';
+  function crc16(str) { var x = 0xffff; for (var i = 0; i < str.length; i++) { x ^= str.charCodeAt(i) << 8; for (var j = 0; j < 8; j++) x = x & 0x8000 ? ((x << 1) ^ 0x1021) & 0xffff : (x << 1) & 0xffff; } return ('000' + x.toString(16).toUpperCase()).slice(-4); }
+  function qrisNominal(statis, nominal) {
+    var s = statis.trim(), t = [], i = 0;
+    while (i < s.length) { var len = parseInt(s.substr(i + 2, 2), 10); if (isNaN(len)) break; t.push([s.substr(i, 2), s.substr(i + 4, len)]); i += 4 + len; }
+    t = t.filter(function (x) { return ['54', '55', '56', '57', '63'].indexOf(x[0]) < 0; });
+    t.forEach(function (x) { if (x[0] === '01') x[1] = '12'; });
+    var at = t.length; for (var k = 0; k < t.length; k++) { if (t[k][0] > '54') { at = k; break; } }
+    t.splice(at, 0, ['54', String(nominal)]);
+    var body = t.map(function (x) { return x[0] + ('0' + x[1].length).slice(-2) + x[1]; }).join('') + '6304';
+    return body + crc16(body);
+  }
+  function muatQR(cb) {
+    if (window.qrcode) return cb();
+    var js = document.createElement('script'); js.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js';
+    js.onload = function () { cb(); }; js.onerror = function () { cb(true); }; document.head.appendChild(js);
+  }
+  function gambarQR(nominal) {
+    var img = $('#qrImg'), ph = $('#qrPh'), save = $('#qrSave');
+    img.hidden = true; ph.hidden = false; ph.textContent = 'Menyiapkan kode QR…'; save.classList.add('off');
+    muatQR(function (gagal) {
+      if (gagal || !window.qrcode) { ph.textContent = 'Kode QR tidak bisa dimuat.' + (BY.rek ? ' Silakan pakai transfer bank.' : ' Coba muat ulang halaman.'); return; }
+      var q = qrcode(0, 'M'); q.addData(qrisNominal(BY.qris, nominal)); q.make();
+      var n = q.getModuleCount(), cell = Math.max(6, Math.floor(480 / (n + 8))), side = (n + 8) * cell, top = 70, bot = 110;
+      var cv = document.createElement('canvas'); cv.width = side; cv.height = side + top + bot;
+      var g = cv.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, cv.width, cv.height);
+      g.fillStyle = '#0b7285'; g.font = 'bold 30px sans-serif'; g.textAlign = 'center'; g.fillText('QRIS · ' + S.brand, side / 2, 46);
+      g.fillStyle = '#111';
+      for (var r = 0; r < n; r++) for (var c = 0; c < n; c++) if (q.isDark(r, c)) g.fillRect((c + 4) * cell, top + (r + 4) * cell, cell, cell);
+      g.font = 'bold 40px sans-serif'; g.fillText(rp(nominal), side / 2, top + side + 48);
+      g.fillStyle = '#555'; g.font = '22px sans-serif'; g.fillText('Booking ' + BY.persen + '% · nominal sudah terisi', side / 2, top + side + 84);
+      var url = cv.toDataURL('image/png'); img.src = url; save.href = url; img.hidden = false; ph.hidden = true; save.classList.remove('off');
+    });
+  }
+  function pilihBayar(id) {
+    bayarVia = id;
+    $$('.pay-tab').forEach(function (b) { var on = b.dataset.pay === id; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+    $$('.pay-pane').forEach(function (p) { p.hidden = p.dataset.pane !== id; });
+  }
+  function salin(teks, btn) {
+    var ok = function () { var t = btn.textContent; btn.textContent = 'Tersalin ✓'; setTimeout(function () { btn.textContent = t; }, 1500); };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(teks).then(ok, function () {});
+    else { var ta = document.createElement('textarea'); ta.value = teks; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); ok(); } catch (e) {} ta.remove(); }
+  }
+  function renderBayar() {
+    if (!BY) return;
+    var r = calc(), l = layanan();
+    bookAmt = r.total && !r.konsul ? Math.ceil(r.total * BY.persen / 100 / 1000) * 1000 : 0;
+    var lbl = $('#btnKirim span');
+    if (!bookAmt) {
+      $('#paySum').innerHTML = '<p class="mb0">Biaya mobil ukuran ekstra dihitung admin. Kirim pesanan dulu, nominal booking ' + BY.persen + '% kami kirim lewat WhatsApp.</p>';
+      $('#payBox').hidden = true; $('#kirimHint').hidden = true; lbl.textContent = 'Kirim ke WhatsApp'; return;
+    }
+    $('#payBox').hidden = false; $('#kirimHint').hidden = false; lbl.textContent = 'Sudah bayar';
+    $('#paySum').innerHTML =
+      '<div class="row"><span>Total biaya' + (l === 'langganan' ? ' bulan pertama' : '') + '</span><span>' + rp(r.total) + '</span></div>' +
+      '<div class="row big"><span>Booking ' + BY.persen + '%</span><b>' + rp(bookAmt) + '</b></div>' +
+      '<div class="row"><span>Sisa setelah dicek</span><span>' + rp(r.total - bookAmt) + '</span></div>';
+    var tabs = $$('.pay-tab'); if (!bayarVia || !$('.pay-tab[data-pay="' + bayarVia + '"]')) bayarVia = tabs[0].dataset.pay;
+    pilihBayar(bayarVia);
+    if (BY.qris) gambarQR(bookAmt);
+    if (BY.rek) $('#rekAmt').textContent = rp(bookAmt);
+  }
+  if (BY) {
+    $$('.pay-tab').forEach(function (b) { b.addEventListener('click', function () { pilihBayar(b.dataset.pay); }); });
+    $$('[data-copy]').forEach(function (b) { b.addEventListener('click', function () { salin(b.dataset.copy, b); }); });
+    if ($('#copyAmt')) $('#copyAmt').addEventListener('click', function () { salin(String(bookAmt), this); });
+    $('#btnKirim').addEventListener('click', kirimWA);
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     if (!validate(3)) return;
+    if (BY) go(4); else kirimWA();
+  });
+  function kirimWA() {
     var r = calc(), l = layanan(), g = function (id) { return $('#' + id).value.trim(); };
     var namaLayanan = { langganan: 'Langganan Kilap', sekali: 'Cuci Sekali Datang', detailing: 'Salon & Perawatan', banjir: 'Pemulihan Pascabanjir' }[l];
     var tglFmt = new Date(g('tanggal') + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
@@ -257,7 +332,10 @@
       '*Layanan:* ' + namaLayanan,
     ].concat(r.rows.map(function (x) { return '• ' + x[0] + (typeof x[1] === 'number' ? ' – ' + rp(x[1]) : x[1] ? ' – ' + x[1] : ''); }))
       .concat([
-        '*Perkiraan biaya:* ' + (r.total ? rp(r.total) + r.per : '-') + (r.konsul ? ' (+ mobil ekstra, harga lewat chat)' : ''), '',
+        '*Perkiraan biaya:* ' + (r.total ? rp(r.total) + r.per : '-') + (r.konsul ? ' (+ mobil ekstra, harga lewat chat)' : ''),
+        BY && bookAmt ? '*Booking ' + BY.persen + '%:* ' + rp(bookAmt) + ' via ' + (bayarVia === 'qris' ? 'QRIS' : 'transfer ' + BY.rek.bank) + ' (bukti bayar terlampir)' : null,
+        BY && bookAmt ? '*Sisa setelah dicek:* ' + rp(r.total - bookAmt) : null,
+        BY && !bookAmt ? '*Booking:* menunggu nominal dari admin' : null, '',
         '*Nama:* ' + g('nama'),
         '*WhatsApp:* ' + g('hp'),
         g('maps') ? '*Lokasi:* ' + g('maps') : null,
@@ -274,7 +352,7 @@
     var url = 'https://wa.me/' + S.whatsapp + '?text=' + encodeURIComponent(lines.join('\n'));
     var w = window.open(url, '_blank');
     if (w) w.opener = null; else location.href = url;
-  });
+  }
 
   // Prefill dari URL (?layanan=...&paket=...&ukuran=...)
   var pre = q.get('layanan');
