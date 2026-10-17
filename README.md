@@ -136,7 +136,7 @@ Edit langsung di GitHub (ikon pensil pada file), lalu **Commit changes**. Situs 
 | `email` | Kosongkan bila belum aktif (tidak ditampilkan) |
 | `instagram` | Username tanpa `@`, mis. `klikkilap` |
 | `googleReview` | Link ulasan Google, mis. `https://g.page/r/.../review`. Kosongkan untuk menyembunyikan tombol ulasan |
-| `jamOperasional` | Teks jam kerja, mis. `Setiap hari, pukul 06.00–18.00 WIB` |
+| `jamOperasional` | Teks jam kerja, mis. `Setiap hari, pukul 08.00–18.00 WIB` |
 | `orderTerakhir` | Batas jam pesan untuk hari yang sama |
 | `jamPilihan` | Daftar jam di form pemesanan |
 | `area` | Daftar wilayah di footer, beranda, dan pilihan wilayah form |
@@ -299,8 +299,8 @@ Yang sudah terpasang otomatis:
 
 | Kanal | Yang perlu sama dengan situs |
 |---|---|
-| **Google Business Profile** | Nama, nomor WA, situs, jam (06.00–18.00), area layanan termasuk Surabaya & Gresik. Link ulasan: `https://g.page/r/CYroSPzDbWEMEBM/review` |
-| **WhatsApp Business** | Sampul baru (`klikkilap-sampul-wa-v2.png`), deskripsi tanpa link, Situs web 1 `https://klikkilap.com`, Situs web 2 `https://klikkilap.com/pesan/`, jam 06.00–18.00, kategori Layanan Otomotif |
+| **Google Business Profile** | Nama, nomor WA, situs, jam (08.00–18.00), area layanan termasuk Surabaya & Gresik. Link ulasan: `https://g.page/r/CYroSPzDbWEMEBM/review` |
+| **WhatsApp Business** | Sampul baru (`klikkilap-sampul-wa-v2.png`), deskripsi tanpa link, Situs web 1 `https://klikkilap.com`, Situs web 2 `https://klikkilap.com/pesan/`, jam 08.00–18.00, kategori Layanan Otomotif |
 | **Instagram @klikkilap** | Foto profil logo, link bio `https://klikkilap.com/pesan/`, post sematan (`klikkilap-ig-post-sematkan.png`) |
 | **GoPay Merchant (QRIS)** | Nama merchant: **Mitra Bangun, Jasa Servis**. Bila berubah, perbarui `qrisPayload` |
 
