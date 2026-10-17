@@ -549,7 +549,7 @@ for (const p of posts) {
     body: `<section class="page-hero" style="padding-bottom:24px"><div class="container"><div class="crumbs"><a href="${u()}">Beranda</a> / Pesan Jadwal</div><h1>Jadwalkan Kunjungan ${esc(c.brand)}</h1><p class="lead mb0">${B.aktif ? `Empat langkah singkat. Bayar booking ${B.persen}% di langkah terakhir, lalu pesanan masuk ke WhatsApp kami dan jadwal Anda terkunci.` : 'Tiga langkah singkat. Setelah dikirim, pesanan masuk ke WhatsApp kami dan admin mengonfirmasi jadwalnya.'}</p></div></section>
 <section class="section" style="padding-top:24px"><div class="container booking">
 <form id="bookForm" class="card" novalidate>
-  <ol class="stepper"><li class="on" data-s="1">1. Jenis layanan</li><li data-s="2">2. Pilihan paket</li><li data-s="3">3. Alamat & waktu</li>${B.aktif ? '<li data-s="4">4. Booking</li>' : ''}</ol>
+  <ol class="stepper"><li class="on" data-s="1"><span class="n">1.</span> <span class="lg">Jenis layanan</span><span class="sm">Layanan</span></li><li data-s="2"><span class="n">2.</span> <span class="lg">Pilihan paket</span><span class="sm">Paket</span></li><li data-s="3"><span class="n">3.</span> <span class="lg">Alamat & waktu</span><span class="sm">Alamat</span></li>${B.aktif ? '<li data-s="4"><span class="n">4.</span> Booking</li>' : ''}</ol>
 
   <div class="panel on" data-p="1">
     <fieldset class="fieldset"><legend>Layanan apa yang Anda butuhkan?</legend>
@@ -613,9 +613,9 @@ ${B.aktif ? `
         <p class="hint">Nominal sudah terisi otomatis. Di HP: simpan gambar, buka aplikasi bank atau e-wallet, pilih <b>Scan / Bayar</b>, lalu ambil QR dari galeri.</p>
       </div>` : ''}
       ${B.rek ? `<div class="pay-pane" data-pane="transfer">
-        <div class="rek"><div><small>Bank</small><b>${esc(B.rek.bank)}</b></div></div>
-        <div class="rek"><div><small>Nomor rekening</small><b id="rekNo">${esc(B.rek.no)}</b></div><button type="button" class="btn btn-outline btn-sm" data-copy="${esc(B.rek.no)}">Salin</button></div>
-        <div class="rek"><div><small>Atas nama</small><b>${esc(B.rek.an)}</b></div></div>
+        <p class="hint mb0">${B.rek.length > 1 ? 'Pilih bank tujuan, lalu salin nomor rekeningnya:' : 'Rekening tujuan:'}</p>
+        <div class="rek-list">${B.rek.map((r, i) => `<label class="rek-opt">${B.rek.length > 1 ? `<input type="radio" name="rekBank" value="${esc(r.bank)}"${i ? '' : ' checked'}>` : ''}<span class="rek-body"><small>${esc(r.bank)}</small><b>${esc(r.no)}</b></span><button type="button" class="btn btn-outline btn-sm" data-copy="${esc(r.no)}">Salin</button></label>`).join('')}</div>
+        ${[...new Set(B.rek.map((r) => r.an))].length === 1 ? `<div class="rek"><div><small>Atas nama</small><b>${esc(B.rek[0].an)}</b></div></div>` : ''}
         <div class="rek"><div><small>Nominal transfer</small><b id="rekAmt"></b></div><button type="button" class="btn btn-outline btn-sm" id="copyAmt">Salin</button></div>
         <p class="hint">Transfer tepat sesuai nominal agar mudah dicocokkan.</p>
       </div>` : ''}
