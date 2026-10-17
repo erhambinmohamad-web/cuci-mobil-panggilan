@@ -19,7 +19,10 @@
     "noRekening": "0000000000",
     "atasNama": "NAMA PEMILIK REKENING",
     "tunai": true,
-    "qris": true
+    "qris": true,
+    "bookingPersen": 30,
+    "_qrisPetunjuk": "Tempel isi teks QRIS statis merchant Anda di qrisPayload (diawali 000201...). Situs mengubahnya jadi QRIS dengan nominal booking otomatis. Kosongkan bila belum punya.",
+    "qrisPayload": ""
   },
   "garansiJam": 24,
   "produk": "sampo pH-netral, degreaser, dan sealant kelas detailer",
