@@ -13,7 +13,8 @@
   "jamOperasional": "Setiap hari, pukul 06.00–18.00 WIB",
   "orderTerakhir": "16.00",
   "jamPilihan": ["06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"],
-  "area": ["Jakarta Selatan", "Jakarta Timur", "Jakarta Barat", "Jakarta Utara", "Jakarta Pusat", "Depok", "Bogor", "Tangerang", "Tangerang Selatan", "Bekasi"],
+  "area": ["Jakarta Selatan", "Jakarta Timur", "Jakarta Barat", "Jakarta Utara", "Jakarta Pusat", "Depok", "Bogor", "Tangerang", "Tangerang Selatan", "Bekasi", "Surabaya", "Gresik"],
+  "cakupan": "Jabodetabek, Surabaya & Gresik",
   "pembayaran": {
     "bank": "BCA",
     "noRekening": "0000000000",
