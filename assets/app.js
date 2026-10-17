@@ -333,7 +333,7 @@
     ].concat(r.rows.map(function (x) { return '• ' + x[0] + (typeof x[1] === 'number' ? ' – ' + rp(x[1]) : x[1] ? ' – ' + x[1] : ''); }))
       .concat([
         '*Perkiraan biaya:* ' + (r.total ? rp(r.total) + r.per : '-') + (r.konsul ? ' (+ mobil ekstra, harga lewat chat)' : ''),
-        BY && bookAmt ? '*Booking ' + BY.persen + '%:* ' + rp(bookAmt) + ' via ' + (bayarVia === 'qris' ? 'QRIS' : 'transfer ' + BY.rek.bank) + ' (bukti bayar terlampir)' : null,
+        BY && bookAmt ? '*Booking ' + BY.persen + '%:* ' + rp(bookAmt) + ' via ' + (bayarVia === 'qris' ? 'QRIS' : 'transfer ' + (($('input[name=rekBank]:checked') || {}).value || BY.rek[0].bank)) + ' (bukti bayar terlampir)' : null,
         BY && bookAmt ? '*Sisa setelah dicek:* ' + rp(r.total - bookAmt) : null,
         BY && !bookAmt ? '*Booking:* menunggu nominal dari admin' : null, '',
         '*Nama:* ' + g('nama'),
