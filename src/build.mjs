@@ -100,6 +100,7 @@ function footer() {
     <li><a href="${waChat}" target="_blank" rel="noopener">WhatsApp ${esc(c.whatsappDisplay)}</a></li>
     ${c.email ? `<li><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></li>` : ''}
     ${c.instagram ? `<li><a href="https://instagram.com/${esc(c.instagram)}" target="_blank" rel="noopener">Instagram @${esc(c.instagram)}</a></li>` : ''}
+    ${c.googleReview ? `<li><a href="${esc(c.googleReview)}" target="_blank" rel="noopener"><span class="star" aria-hidden="true">★</span> Beri ulasan di Google</a></li>` : ''}
   </ul></div>
 </div>
 <div class="copy"><span>© ${new Date().getFullYear()} ${esc(c.brand)}. Hak cipta dilindungi.</span><span>${esc(c.area.join(' · '))}</span></div>
@@ -501,6 +502,7 @@ page({
   </ul>
   <h2>Area layanan</h2>
   <p>${esc(c.area.join(', '))}. Rincian kelurahan ada di halaman <a href="${u(P.area)}">area layanan</a>.</p>
+  ${c.googleReview ? `<div class="review-box mt40"><div><h2>Sudah pernah memakai ${esc(c.brand)}?</h2><p class="mb0">Ceritakan pengalaman Anda di Google. Ulasan Anda membantu calon pelanggan lain dan membantu kami terus memperbaiki layanan.</p></div><a class="btn btn-review" href="${esc(c.googleReview)}" target="_blank" rel="noopener"><span class="star" aria-hidden="true">★</span> Beri ulasan di Google</a></div>` : ''}
 </div></section>
 ${ctaBand()}`,
 });
