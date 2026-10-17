@@ -17,14 +17,15 @@
   "area": ["Jakarta Selatan", "Jakarta Timur", "Jakarta Barat", "Jakarta Utara", "Jakarta Pusat", "Depok", "Bogor", "Tangerang", "Tangerang Selatan", "Bekasi", "Surabaya", "Gresik"],
   "cakupan": "Jabodetabek, Surabaya & Gresik",
   "pembayaran": {
-    "bank": "BCA",
-    "noRekening": "0000000000",
-    "atasNama": "NAMA PEMILIK REKENING",
+    "rekening": [
+      { "bank": "Mandiri", "noRekening": "1510010193578", "atasNama": "Erham Bin Mohamad" },
+      { "bank": "BCA", "noRekening": "0050732878", "atasNama": "Erham Bin Mohamad" },
+      { "bank": "OCBC", "noRekening": "693819534100", "atasNama": "Erham Bin Mohamad" }
+    ],
     "tunai": true,
     "qris": true,
     "bookingPersen": 30,
-    "_qrisPetunjuk": "Tempel isi teks QRIS statis merchant Anda di qrisPayload (diawali 000201...). Situs mengubahnya jadi QRIS dengan nominal booking otomatis. Kosongkan bila belum punya.",
-    "qrisPayload": ""
+    "qrisPayload": "00020101021126610014COM.GO-JEK.WWW01189360091435260826620210G5260826620303UMI51440014ID.CO.QRIS.WWW0215ID10254615275700303UMI5204753853033605802ID5925Mitra Bangun, Jasa Servis6015JAKARTA SELATAN61051213062070703A0163044E6F"
   },
   "garansiJam": 24,
   "produk": "sampo pH-netral, degreaser, dan sealant kelas detailer",
