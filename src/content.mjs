@@ -22,7 +22,7 @@ export const detailPages = {
     ],
     scope: 'Jok, karpet kabin, plafon, panel pintu, dashboard, dan bagasi. Karpet dasar yang harus dibongkar dihitung terpisah.',
     rawat: ['Pakai keset karet di musim hujan', 'Jangan tinggalkan payung basah di kabin', 'Buka jendela beberapa menit setelah mobil dijemur'],
-    meta: 'Cuci interior & jok mobil panggilan di Jabodetabek: jok, karpet, plafon, dan dashboard dibersihkan di rumah Anda.',
+    meta: 'Cuci interior & jok mobil panggilan di Jabodetabek, Surabaya & Gresik: jok, karpet, plafon, dan dashboard dibersihkan di rumah Anda.',
   },
   exterior: {
     slug: 'poles-mobil',
@@ -131,7 +131,7 @@ export const detailPages = {
     steps: null,
     scope: 'Salon Interior & Jok, Poles & Proteksi Cat, Perawatan Kaca, Cuci Ruang Mesin, serta Ban & Velg. Fogging dan bongkar karpet dasar dihitung terpisah.',
     rawat: ['Lanjutkan dengan cuci rutin supaya hasil salon bertahan lama', 'Hindari mencuci di bawah terik matahari', 'Jadwalkan salon ulang 6–12 bulan sekali'],
-    meta: 'Salon mobil panggilan di Jabodetabek: kabin, cat, kaca, ruang mesin, serta ban & velg dikerjakan di rumah Anda dalam satu hari.',
+    meta: 'Salon mobil panggilan di Jabodetabek, Surabaya & Gresik: kabin, cat, kaca, ruang mesin, serta ban & velg dikerjakan di rumah Anda dalam satu hari.',
   },
 };
 
