@@ -298,7 +298,7 @@ label.f i{color:var(--accent-d);font-style:normal}
 .rek{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line)}
 .rek small{display:block;color:var(--muted);font-size:.8rem}
 .rek b{font-size:1.05rem;word-break:break-all}
-@media (max-width:520px){[data-p="4"] .form-nav{flex-direction:column-reverse}[data-p="4"] .form-nav .btn{width:100%;justify-content:center}}
+@media (max-width:520px){[data-p="3"] .form-nav{flex-direction:column-reverse}[data-p="3"] .form-nav .btn{width:100%;justify-content:center}}
 @media (max-width:380px){.logo{font-size:1.15rem;gap:6px}.logo-mark{width:30px;height:30px}.nav-cta{gap:4px}.nav-cta .btn-primary{padding:7px 10px;font-size:.82rem}}
 @media (max-width:340px){.logo{font-size:1rem}.logo-mark{width:28px;height:28px}.nav-cta .btn-primary{padding:6px 8px;font-size:.78rem}}
 .star{color:#f59e0b}
@@ -318,3 +318,37 @@ label.f i{color:var(--accent-d);font-style:normal}
 @media (max-width:400px){.rek-opt{gap:10px;padding:10px}.rek-body b{font-size:.98rem}}
 .stepper .sm{display:none}
 @media (max-width:480px){.stepper{gap:6px}.stepper .lg{display:none}.stepper .sm{display:inline}.stepper li{font-size:.78rem;white-space:nowrap}.stepper .n{display:block}}
+
+/* Form v2: kategori, jumlah mobil, cari mobil, peta layar penuh */
+.cat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.cnt-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:6px}
+@media (max-width:720px){.cat-row{grid-template-columns:repeat(2,1fr)}}
+.cat,.cnt{position:relative;display:block;cursor:pointer}
+.cat input,.cnt input{position:absolute;opacity:0;pointer-events:none}
+.cat>span,.cnt>span{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%;min-height:74px;border:2px solid var(--line);border-radius:12px;padding:10px 8px;background:#fff;transition:.12s}
+.cat b,.cnt b{font-size:.95rem;line-height:1.25}
+.cat small,.cnt small{display:block;font-size:.8rem;font-weight:700;margin-top:4px;color:var(--muted)}
+.cnt small{color:var(--accent-d)}
+.cat input:checked+span,.cnt input:checked+span{border-color:var(--primary);background:var(--primary-l)}
+.cat input:checked+span small{color:var(--primary)}
+.cat input:focus-visible+span,.cnt input:focus-visible+span{outline:3px solid #9bd6de}
+.car-row{display:grid;grid-template-columns:34px 1fr 1fr;gap:8px 12px;align-items:end;padding:14px 0 6px;border-top:1px dashed var(--line);margin-top:10px}
+.car-no{width:30px;height:30px;border-radius:15px;background:var(--primary);color:#fff;font-weight:800;font-size:.9rem;display:grid;place-items:center;margin-bottom:9px}
+.car-size{grid-column:2/-1;font-size:.88rem;color:var(--muted);min-height:22px}
+.car-size .size-chip{display:inline-block;padding:3px 12px;border-radius:12px;background:var(--primary-l);color:var(--primary);font-weight:700}
+.car-size select{max-width:320px;margin-top:4px}
+.input::placeholder{color:#9aa9ae}
+@media (max-width:520px){.car-row{grid-template-columns:30px 1fr}.car-row .car-f,.car-size{grid-column:2}.car-no{grid-row:1;align-self:end}}
+.map-tip,.map-done{display:none}
+.loc-map.full{position:fixed;inset:0;z-index:1200;height:100%!important;border-radius:0;border:0;margin:0}
+body.map-open{overflow:hidden}
+body.map-open .map-tip{display:block;position:fixed;top:calc(12px + env(safe-area-inset-top));left:58px;right:12px;z-index:1300;background:#fff;border-radius:10px;padding:10px 14px;font-size:.88rem;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+body.map-open .map-done{display:flex;align-items:center;justify-content:center;position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:1300;min-height:52px}
+.map-tap{position:absolute;inset:0;z-index:1001;display:flex;align-items:flex-end;justify-content:center;padding:0 0 10px;background:transparent;border:0;cursor:pointer;font:inherit}
+.map-tap span{background:rgba(16,36,43,.8);color:#fff;font-size:.8rem;font-weight:700;padding:6px 12px;border-radius:14px}
+.loc-map.full .map-tap{display:none}
+.form-grid>*{min-width:0}
+.loc-box #btnLoc{white-space:normal;text-align:center;line-height:1.3}
+.cat em{display:block;font-style:normal;font-weight:800;font-size:.84rem;color:var(--primary);white-space:nowrap;margin-top:1px}
+.cat small{margin-top:6px}
+.map-tap[hidden]{display:none}
