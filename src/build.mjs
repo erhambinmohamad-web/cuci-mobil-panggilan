@@ -3,13 +3,15 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { icon, heroArt } from './icons.mjs';
-import { detailPages, faq, posts as basePosts } from './content.mjs';
+import { detailPages, faq, bayarInfo, posts as basePosts } from './content.mjs';
 import { areas, extraPosts } from './seo.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(ROOT, 'dist');
 const c = JSON.parse(fs.readFileSync(path.join(ROOT, 'site.config.json'), 'utf8'));
 const H = c.harga;
+const B = bayarInfo(c);
+const lunasCek = B.aktif ? 'Lunas setelah dicek' : 'Bayar setelah dicek';
 
 // ---------- util ----------
 const site = (c.customDomain ? `https://${c.customDomain}` : (process.env.SITE_URL || c.baseUrl)).replace(/\/$/, '');
@@ -214,7 +216,7 @@ const fq = (grup) => FAQ.find((g) => g.grup === grup).items;
 
 const features = [
   ['tag', 'Harga tertulis sejak awal', 'Setiap paket dan ukuran mobil punya harga pasti. Tidak ada ongkos datang di dalam area layanan.'],
-  ['wallet', 'Bayar setelah Anda cek', 'Periksa hasil kerja lebih dulu. Pembayaran dilakukan setelah Anda puas.'],
+  B.aktif ? ['wallet', 'Lunas setelah Anda cek', `Booking ${B.persen}% saat pesan untuk mengunci jadwal. Sisanya dibayar setelah Anda puas.`] : ['wallet', 'Bayar setelah Anda cek', 'Periksa hasil kerja lebih dulu. Pembayaran dilakukan setelah Anda puas.'],
   ['wa', 'Semua lewat WhatsApp', 'Pesan, konfirmasi jadwal, dan pindah jadwal cukup lewat chat.'],
   ['home', 'Rumah, kantor, atau apartemen', 'Tim datang ke alamat mana pun di dalam area layanan, selama ada air dan izin pengelola.'],
   ['flask', 'Bahan kelas detailer', 'Kami memakai sampo pH-netral dan cairan khusus per bagian mobil, bukan sabun rumah tangga.'],
@@ -225,10 +227,10 @@ const featureGrid = (list = features) => `<div class="grid g3">${list
   .join('')}</div>`;
 
 const howItWorks = `<div class="grid g4">${[
-  ['Pilih paket', 'Lewat form pemesanan atau langsung chat WhatsApp.'],
+  B.aktif ? ['Pilih & booking', `Pilih paket di form, lalu bayar booking ${B.persen}% lewat QRIS atau transfer.`] : ['Pilih paket', 'Lewat form pemesanan atau langsung chat WhatsApp.'],
   ['Konfirmasi jadwal', 'Admin mengonfirmasi hari, jam, dan alamat.'],
   ['Tim bekerja di lokasi', 'Peralatan dan bahan dibawa sendiri oleh tim.'],
-  ['Cek, lalu bayar', 'Bayar lewat QRIS, transfer, atau tunai.'],
+  B.aktif ? ['Cek, lalu lunasi', 'Sisa biaya dibayar lewat QRIS, transfer, atau tunai.'] : ['Cek, lalu bayar', 'Bayar lewat QRIS, transfer, atau tunai.'],
 ].map(([t, d], i) => `<div class="step"><div class="num">${i + 1}</div><h3>${t}</h3><p>${d}</p></div>`).join('')}</div>`;
 
 const testimoniBlock = () => (c.testimoni && c.testimoni.length ? `
@@ -260,11 +262,11 @@ const services = [
 page({
   file: 'index.html',
   title: `Cuci Mobil Panggilan & Salon Mobil ke Rumah | ${c.brand}`,
-  desc: `Cuci mobil panggilan, poles, dan salon mobil ke rumah di Jabodetabek. Langganan mulai ${rp(H.langganan[0].harga)}/bulan, cuci sekali datang ${rp(H.sekaliCuci[0].harga)}. Bayar setelah dicek.`,
+  desc: `Cuci mobil panggilan, poles, dan salon mobil ke rumah di Jabodetabek. Langganan mulai ${rp(H.langganan[0].harga)}/bulan, cuci sekali datang ${rp(H.sekaliCuci[0].harga)}. ${lunasCek}.`,
   body: `
 <section class="hero"><div class="container hero-grid">
   <div>
-    <span class="badge">${icon.shield(16)} Harga tertulis · Bayar setelah dicek</span>
+    <span class="badge">${icon.shield(16)} Harga tertulis · ${lunasCek}</span>
     <h1>Cuci Mobil Panggilan & Salon Mobil, Datang ke Rumah Anda</h1>
     <p class="lead">Pesan lewat WhatsApp, tim ${esc(c.brand)} datang ke garasi Anda dengan alat dan bahan sendiri. Anda cukup menyediakan keran air.</p>
     <div class="hero-actions"><a class="btn btn-primary" href="${u(P.pesan)}">Pesan Jadwal</a><a class="btn btn-outline" href="${u(P.harga)}">Cek Daftar Harga</a></div>
@@ -391,7 +393,7 @@ ${ctaBand()}`,
     file: `${dp('complete')}index.html`, cur: dp('complete'),
     title: p.title,
     desc: `${p.meta} Mulai ${rp(d.harga[0])}.`,
-    body: `${pageHero({ crumb: p.h1, eyebrow: 'Salon mobil lengkap', h1: p.h1, sub: p.sub, benefits: ['Lima perawatan, satu tim', `Hemat hingga ${rp(satuan[0] - d.harga[0])}`, 'Bayar setelah dicek'], ctaHref: `${P.pesan}?layanan=detailing&paket=complete` })}
+    body: `${pageHero({ crumb: p.h1, eyebrow: 'Salon mobil lengkap', h1: p.h1, sub: p.sub, benefits: ['Lima perawatan, satu tim', `Hemat hingga ${rp(satuan[0] - d.harga[0])}`, lunasCek], ctaHref: `${P.pesan}?layanan=detailing&paket=complete` })}
 <section class="section"><div class="container">
   <h2 class="center">Kapan salon lengkap masuk akal?</h2>
   <div class="grid g3 mt40">${p.masalah.map(([m, s]) => `<div class="card"><h3 style="font-size:1.05rem">${esc(m)}</h3><p class="muted mb0">${esc(s)}</p></div>`).join('')}</div>
@@ -451,7 +453,7 @@ ${ctaBand('Mobil terendam? Kirim fotonya sekarang', 'Makin cepat ditangani, maki
     file: `${P.harga}index.html`, cur: P.harga,
     title: 'Harga Cuci Mobil Panggilan, Poles & Salon Mobil 2026',
     desc: `Daftar harga ${c.brand}: langganan Kilap mulai ${rp(H.langganan[0].harga)}/bulan, cuci sekali datang ${rp(H.sekaliCuci[0].harga)}, poles, salon mobil, dan pemulihan pascabanjir.`,
-    body: `${pageHero({ crumb: 'Daftar Harga', eyebrow: 'Daftar harga', h1: `Daftar Harga ${c.brand}`, sub: 'Harga sudah termasuk tenaga, bahan, peralatan, dan ongkos datang di dalam area layanan. Pembayaran setelah pekerjaan dicek.', cta: false })}
+    body: `${pageHero({ crumb: 'Daftar Harga', eyebrow: 'Daftar harga', h1: `Daftar Harga ${c.brand}`, sub: 'Harga sudah termasuk tenaga, bahan, peralatan, dan ongkos datang di dalam area layanan. ' + (B.aktif ? `Booking ${B.persen}% saat pesan, sisanya dibayar setelah pekerjaan dicek.` : 'Pembayaran setelah pekerjaan dicek.'), cta: false })}
 <section class="section"><div class="container">
   <nav class="tabs" aria-label="Kategori harga">${tabs.map(([id, t], i) => `<a href="#${id}"${i === 0 ? ' class="active"' : ''}>${t}</a>`).join('')}</nav>
   <div class="tab-panel" id="cuci">
@@ -488,13 +490,13 @@ page({
 <section class="section"><div class="container article">
   <p>${esc(c.brand)} berawal dari pertanyaan sederhana: kenapa merawat mobil harus menghabiskan akhir pekan di antrean? Kami memindahkan pekerjaan itu ke tempat mobil Anda diparkir, entah di rumah, kantor, atau apartemen.</p>
   <h2>Arti nama kami</h2>
-  <p><b>Klik</b> karena memesan cukup dari ponsel. <b>Kilap</b> karena itulah hasil yang Anda cek sebelum membayar.</p>
+  <p><b>Klik</b> karena memesan cukup dari ponsel. <b>Kilap</b> karena itulah hasil yang Anda cek sebelum ${B.aktif ? 'melunasi' : 'membayar'}.</p>
   <h2>Cara kami bekerja</h2>
   <ul>
     <li><b>Dua ember, banyak lap.</b> Air bilas dipisah dari air sampo, dan lap microfiber dibedakan untuk bodi, kaca, dan velg.</li>
     <li><b>Bahan sesuai bagian.</b> ${esc(c.produk.charAt(0).toUpperCase() + c.produk.slice(1))}, dipakai sesuai bagian mobil.</li>
     <li><b>Harga di depan.</b> Harga setiap paket dan ukuran mobil tertulis di <a href="${u(P.harga)}">daftar harga</a>. Tidak ada tambahan ongkos datang di dalam area layanan.</li>
-    <li><b>Anda cek dulu.</b> Pembayaran dilakukan setelah pekerjaan diperiksa. Bila ada yang terlewat dalam ${c.garansiJam} jam, tim datang lagi.</li>
+    <li><b>Anda cek dulu.</b> ${B.aktif ? 'Pelunasan' : 'Pembayaran'} dilakukan setelah pekerjaan diperiksa. Bila ada yang terlewat dalam ${c.garansiJam} jam, tim datang lagi.</li>
   </ul>
   <h2>Area layanan</h2>
   <p>${esc(c.area.join(', '))}. Rincian kelurahan ada di halaman <a href="${u(P.area)}">area layanan</a>.</p>
@@ -535,16 +537,16 @@ for (const p of posts) {
 
 // Form pemesanan → WhatsApp
 {
-  const pub = { brand: c.brand, whatsapp: c.whatsapp, area: c.area, jam: c.jamPilihan, harga: H, ukuran: c.ukuran };
+  const pub = { brand: c.brand, whatsapp: c.whatsapp, area: c.area, jam: c.jamPilihan, harga: H, ukuran: c.ukuran, bayar: B.aktif ? { persen: B.persen, qris: B.qris, rek: B.rek } : null };
   page({
     file: `${P.pesan}index.html`, cur: P.pesan,
     title: 'Jadwalkan Cuci & Salon Mobil di Rumah',
     desc: `Jadwalkan kunjungan ${c.brand}: pilih layanan, paket, alamat, dan waktu. Pesanan terkirim ke WhatsApp kami untuk dikonfirmasi.`,
     script: `<script>window.SITE=${JSON.stringify(pub)};</script>`,
-    body: `<section class="page-hero" style="padding-bottom:24px"><div class="container"><div class="crumbs"><a href="${u()}">Beranda</a> / Pesan Jadwal</div><h1>Jadwalkan Kunjungan ${esc(c.brand)}</h1><p class="lead mb0">Tiga langkah singkat. Setelah dikirim, pesanan masuk ke WhatsApp kami dan admin mengonfirmasi jadwalnya.</p></div></section>
+    body: `<section class="page-hero" style="padding-bottom:24px"><div class="container"><div class="crumbs"><a href="${u()}">Beranda</a> / Pesan Jadwal</div><h1>Jadwalkan Kunjungan ${esc(c.brand)}</h1><p class="lead mb0">${B.aktif ? `Empat langkah singkat. Bayar booking ${B.persen}% di langkah terakhir, lalu pesanan masuk ke WhatsApp kami dan jadwal Anda terkunci.` : 'Tiga langkah singkat. Setelah dikirim, pesanan masuk ke WhatsApp kami dan admin mengonfirmasi jadwalnya.'}</p></div></section>
 <section class="section" style="padding-top:24px"><div class="container booking">
 <form id="bookForm" class="card" novalidate>
-  <ol class="stepper"><li class="on" data-s="1">1. Jenis layanan</li><li data-s="2">2. Pilihan paket</li><li data-s="3">3. Alamat & waktu</li></ol>
+  <ol class="stepper"><li class="on" data-s="1">1. Jenis layanan</li><li data-s="2">2. Pilihan paket</li><li data-s="3">3. Alamat & waktu</li>${B.aktif ? '<li data-s="4">4. Booking</li>' : ''}</ol>
 
   <div class="panel on" data-p="1">
     <fieldset class="fieldset"><legend>Layanan apa yang Anda butuhkan?</legend>
@@ -595,12 +597,34 @@ for (const p of posts) {
       <div><label class="f" for="promo">Kode promo</label><input class="input" id="promo" name="promo" placeholder="Bila ada"></div>
     </div></fieldset>
     <div class="err-msg" data-err="3">Isi dulu kolom yang bertanda *.</div>
-    <div class="form-nav"><button type="button" class="btn btn-outline" data-prev>← Kembali</button><button type="submit" class="btn btn-wa">${icon.wa(18)} Kirim ke WhatsApp</button></div>
+    <div class="form-nav"><button type="button" class="btn btn-outline" data-prev>← Kembali</button>${B.aktif ? '<button type="submit" class="btn btn-primary">Lanjut bayar →</button>' : `<button type="submit" class="btn btn-wa">${icon.wa(18)} Kirim ke WhatsApp</button>`}</div>
   </div>
+${B.aktif ? `
+  <div class="panel" data-p="4">
+    <div class="pay-sum" id="paySum"></div>
+    <div id="payBox">
+      <div class="pay-tabs" role="tablist">${B.qris ? '<button type="button" role="tab" class="pay-tab" data-pay="qris">QRIS</button>' : ''}${B.rek ? '<button type="button" role="tab" class="pay-tab" data-pay="transfer">Transfer</button>' : ''}</div>
+      ${B.qris ? `<div class="pay-pane" data-pane="qris">
+        <div class="qr-wrap"><img id="qrImg" alt="QRIS pembayaran booking"><div class="loc-ph" id="qrPh">Menyiapkan kode QR…</div></div>
+        <a class="btn btn-outline btn-block" id="qrSave" download="qris-booking-klikkilap.png">Simpan gambar QR</a>
+        <p class="hint">Nominal sudah terisi otomatis. Di HP: simpan gambar, buka aplikasi bank atau e-wallet, pilih <b>Scan / Bayar</b>, lalu ambil QR dari galeri.</p>
+      </div>` : ''}
+      ${B.rek ? `<div class="pay-pane" data-pane="transfer">
+        <div class="rek"><div><small>Bank</small><b>${esc(B.rek.bank)}</b></div></div>
+        <div class="rek"><div><small>Nomor rekening</small><b id="rekNo">${esc(B.rek.no)}</b></div><button type="button" class="btn btn-outline btn-sm" data-copy="${esc(B.rek.no)}">Salin</button></div>
+        <div class="rek"><div><small>Atas nama</small><b>${esc(B.rek.an)}</b></div></div>
+        <div class="rek"><div><small>Nominal transfer</small><b id="rekAmt"></b></div><button type="button" class="btn btn-outline btn-sm" id="copyAmt">Salin</button></div>
+        <p class="hint">Transfer tepat sesuai nominal agar mudah dicocokkan.</p>
+      </div>` : ''}
+      <p class="hint">Uang booking dikembalikan penuh bila batal paling lambat H-1. Batal di hari H, uang booking tidak dikembalikan.</p>
+    </div>
+    <div class="form-nav"><button type="button" class="btn btn-outline" data-prev>← Kembali</button><button type="button" class="btn btn-wa" id="btnKirim">${icon.wa(18)} <span>Sudah bayar</span></button></div>
+    <p class="hint center" id="kirimHint">Lampirkan screenshot bukti bayar di chat WhatsApp.</p>
+  </div>` : ''}
 </form>
 <aside class="card shadow summary" aria-live="polite"><h3>Pesanan Anda</h3><div id="sumBody"><p class="empty">Belum ada layanan yang dipilih.</p></div>
   <div class="total"><span>Perkiraan biaya</span><span id="sumTotal">—</span></div>
-  <p class="hint">Biaya akhir dikonfirmasi admin lewat WhatsApp. Pembayaran setelah pekerjaan dicek.</p>
+  <p class="hint">${B.aktif ? `Booking ${B.persen}% dibayar saat pesan untuk mengunci jadwal; sisanya setelah pekerjaan dicek.` : 'Biaya akhir dikonfirmasi admin lewat WhatsApp. Pembayaran setelah pekerjaan dicek.'}</p>
   <p class="hint">Ada pertanyaan? <a href="${waChat}" target="_blank" rel="noopener">Chat ${esc(c.whatsappDisplay)}</a></p>
 </aside>
 </div></section>
@@ -629,7 +653,7 @@ for (const p of posts) {
     page({
       file: `${a.slug}/index.html`, cur: P.area,
       title: `Cuci Mobil Panggilan ${a.nama}`,
-      desc: `Cuci mobil panggilan & salon mobil di ${a.nama} (${a.sekitar.slice(0, 4).join(', ')}). Mulai ${rp(H.sekaliCuci[0].harga)}, tim datang ke rumah, bayar setelah dicek.`,
+      desc: `Cuci mobil panggilan & salon mobil di ${a.nama} (${a.sekitar.slice(0, 4).join(', ')}). Mulai ${rp(H.sekaliCuci[0].harga)}, tim datang ke rumah, ${lunasCek.toLowerCase()}.`,
       ld: [faqLd(q), { '@context': 'https://schema.org', '@type': 'Service', serviceType: 'Cuci mobil panggilan', provider: { '@type': 'AutoWash', name: c.brand, url: abs() }, areaServed: { '@type': 'City', name: a.nama }, url: abs(a.slug + '/') }],
       body: `${pageHero({ crumb: `Area / ${a.nama}`, eyebrow: 'Area layanan', h1: `Cuci Mobil Panggilan ${a.nama}`, sub: `Cuci, poles, dan salon mobil di alamat Anda di ${a.nama}. Tim membawa alat dan bahan sendiri.`, benefits: ['Tim datang ke alamat Anda', 'Bayar setelah dicek', `Cek ulang ${c.garansiJam} jam`] })}
 <section class="section"><div class="container grid g2" style="align-items:start">
