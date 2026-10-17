@@ -135,6 +135,7 @@ function page({ file, cur = '', title, desc, body, ld = [], extraHead = '', scri
   writeFile(file, `<!doctype html>
 <html lang="id"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="msvalidate.01" content="ECF72A6A0E2650D2B83E424F60603ABF">
 <title>${esc(fullTitle)}</title>
 <meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${canonical}">
