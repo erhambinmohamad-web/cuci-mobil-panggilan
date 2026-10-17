@@ -119,7 +119,7 @@ const ldBusiness = {
   ...(c.email ? { email: c.email } : {}),
   areaServed: c.area.map((a) => ({ '@type': 'City', name: a })),
   priceRange: `${rp(H.sekaliCuci[0].harga)} – ${rp(detail.complete.harga[2])}`,
-  openingHours: 'Mo-Su 06:00-18:00',
+  openingHours: 'Mo-Su 08:00-18:00',
   ...(c.instagram ? { sameAs: [`https://www.instagram.com/${c.instagram}/`] } : {}),
 };
 
