@@ -140,16 +140,17 @@ const crc16 = (str) => { let x = 0xffff; for (let i = 0; i < str.length; i++) { 
 export const qrisValid = (q) => typeof q === 'string' && /^000201/.test(q.trim()) && q.trim().slice(-8, -4) === '6304' && crc16(q.trim().slice(0, -4)) === q.trim().slice(-4).toUpperCase();
 export const bayarInfo = (c) => {
   const b = c.pembayaran || {};
-  const rek = /[1-9]/.test(b.noRekening || '') ? { bank: b.bank, no: String(b.noRekening).replace(/\s/g, ''), an: b.atasNama } : null;
+  const daftar = Array.isArray(b.rekening) ? b.rekening : [{ bank: b.bank, noRekening: b.noRekening, atasNama: b.atasNama }];
+  const rekList = daftar.filter((r) => r && /[1-9]/.test(String(r.noRekening || ''))).map((r) => ({ bank: r.bank, no: String(r.noRekening).replace(/\s/g, ''), an: r.atasNama || b.atasNama }));
+  const rek = rekList.length ? rekList : null;
   const qris = qrisValid(b.qrisPayload) ? b.qrisPayload.trim() : '';
   const persen = +b.bookingPersen || 0;
   return { aktif: persen > 0 && !!(qris || rek), persen, qris, rek };
 };
 
 export const faq = (c) => {
-  const rekeningAsli = c.pembayaran && /[1-9]/.test(c.pembayaran.noRekening || '');
   const B = bayarInfo(c);
-  const metode = [c.pembayaran.qris ? 'QRIS' : '', rekeningAsli ? `transfer ${c.pembayaran.bank} ${c.pembayaran.noRekening} a.n. ${c.pembayaran.atasNama}` : 'transfer bank', c.pembayaran.tunai ? 'tunai ke petugas' : ''].filter(Boolean).join(', ');
+  const metode = [c.pembayaran.qris ? 'QRIS' : '', B.rek ? `transfer ${B.rek.map((r) => r.bank).join(', ').replace(/, ([^,]*)$/, ' atau $1')} a.n. ${B.rek[0].an}` : 'transfer bank', c.pembayaran.tunai ? 'tunai ke petugas' : ''].filter(Boolean).join(', ');
   return [
     {
       grup: 'Sebelum memesan',
