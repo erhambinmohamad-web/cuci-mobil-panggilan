@@ -407,6 +407,36 @@
     bayarVia = id;
     $$('.pay-tab').forEach(function (b) { var on = b.dataset.pay === id; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
     $$('.pay-pane').forEach(function (p) { p.hidden = p.dataset.pane !== id; });
+    var manual = id !== 'auto'; $('#btnKirim').hidden = !manual; $('#kirimHint').hidden = !manual;
+  }
+  // Pembayaran otomatis Midtrans (Snap): token dibuat di Apps Script, status lunas dicatat otomatis
+  var MT = S.midtrans, mtStatus = '';
+  function muatSnap(cb) {
+    if (window.snap) return cb();
+    var js = document.createElement('script');
+    js.src = MT.mode === 'production' ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js';
+    js.setAttribute('data-client-key', MT.clientKey); js.onload = function () { cb(); }; js.onerror = function () { cb(true); }; document.head.appendChild(js);
+  }
+  function hookJson(data) {
+    return fetch(S.orderHook, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(data) }).then(function (r) { return r.json(); });
+  }
+  function bayarOtomatis() {
+    var b = $('#btnMidtrans'), h = $('#mtHint'), gagal = function (m) { b.disabled = false; h.textContent = m || 'Pembayaran otomatis belum bisa dibuka. Coba lagi, atau pilih tab QRIS/Transfer.'; };
+    b.disabled = true; h.textContent = 'Menyiapkan pembayaran…';
+    var data = dataPesanan('Membuka pembayaran'); data.act = 'snap';
+    hookJson(data).then(function (j) {
+      if (!j || !j.token) return gagal(j && j.error ? 'Gagal: ' + j.error : '');
+      muatSnap(function (err) {
+        if (err || !window.snap) return gagal();
+        var cek = function (lbl) { return hookJson({ k: 'kk1', id: idPesanan(), act: 'cek', order: j.order }).catch(function () {}).then(function () { mtStatus = lbl; kirimWA(); }); };
+        window.snap.pay(j.token, {
+          onSuccess: function () { h.textContent = 'Pembayaran berhasil. Membuka WhatsApp…'; cek('LUNAS (otomatis via Midtrans)'); },
+          onPending: function () { h.textContent = 'Menunggu pembayaran. Status lunas tercatat otomatis setelah Anda membayar.'; cek('menunggu pembayaran (Virtual Account/QRIS)'); },
+          onError: function () { gagal('Pembayaran gagal. Silakan coba lagi.'); },
+          onClose: function () { gagal('Jendela pembayaran ditutup sebelum selesai. Tekan tombol lagi untuk melanjutkan.'); }
+        });
+      });
+    }).catch(function () { gagal(); });
   }
   function salin(teks, btn) {
     var ok = function () { var t = btn.textContent; btn.textContent = 'Tersalin ✓'; setTimeout(function () { btn.textContent = t; }, 1500); };
@@ -431,12 +461,14 @@
     pilihBayar(bayarVia);
     if (BY.qris) gambarQR(bookAmt);
     if (BY.rek) $('#rekAmt').textContent = rp(bookAmt);
+    if ($('#mtAmt')) $('#mtAmt').textContent = rp(bookAmt);
   }
   if (BY) {
     $$('.pay-tab').forEach(function (b) { b.addEventListener('click', function () { pilihBayar(b.dataset.pay); }); });
     $$('[data-copy]').forEach(function (b) { b.addEventListener('click', function () { salin(b.dataset.copy, b); }); });
     if ($('#copyAmt')) $('#copyAmt').addEventListener('click', function () { salin(String(bookAmt), this); });
-    $('#btnKirim').addEventListener('click', kirimWA);
+    $('#btnKirim').addEventListener('click', function () { kirimWA(); });
+    if ($('#btnMidtrans')) $('#btnMidtrans').addEventListener('click', bayarOtomatis);
   }
 
   form.addEventListener('submit', function (e) {
@@ -455,6 +487,15 @@
   function kirimData(status) {
     if (!S.orderHook) return;
     try {
+      fetch(S.orderHook, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(dataPesanan(status)) }).catch(function () {});
+    } catch (e) {}
+  }
+  function metodeBayar() {
+    if (!(BY && bookAmt)) return '';
+    if (bayarVia === 'auto') return 'Midtrans';
+    return bayarVia === 'qris' ? 'QRIS' : 'Transfer ' + (($('input[name=rekBank]:checked') || {}).value || (BY.rek ? BY.rek[0].bank : ''));
+  }
+  function dataPesanan(status) {
       var r = calc(), l = layanan(), g = function (id) { var el = $('#' + id); return el ? el.value.trim() : ''; };
       var data = {
         k: 'kk1', id: idPesanan(), status: status, nama: g('nama'),
@@ -464,13 +505,12 @@
         maps: g('maps'), alamat: g('alamat'), tanggal: g('tanggal'), jam: g('jam'), hari: l === 'langganan' ? vals('hari').join(', ') : '',
         kondisi: g('kondisi'), sumber: g('sumber'), catatan: g('catatan'), promo: g('promo'),
         total: r.total || '', booking: BY && bookAmt ? bookAmt : '', sisa: BY && bookAmt ? r.total - bookAmt : '',
-        bayar: BY && bookAmt ? (bayarVia === 'qris' ? 'QRIS' : 'Transfer ' + (($('input[name=rekBank]:checked') || {}).value || (BY.rek ? BY.rek[0].bank : ''))) : ''
+        bayar: metodeBayar()
       };
-      fetch(S.orderHook, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(data) }).catch(function () {});
-    } catch (e) {}
+      return data;
   }
   function kirimWA() {
-    kirimData(BY && bookAmt ? 'Klik Sudah bayar' : 'Dikirim ke WA');
+    kirimData(BY && bookAmt ? (bayarVia === 'auto' ? 'Dikirim ke WA' : 'Klik Sudah bayar') : 'Dikirim ke WA');
     var r = calc(), l = layanan(), g = function (id) { var el = $('#' + id); return el ? el.value.trim() : ''; };
     var namaLayanan = { langganan: 'Langganan Kilap', sekali: 'Cuci Sekali Datang', detailing: 'Salon & Perawatan', banjir: 'Pemulihan Pascabanjir' }[l];
     var tglFmt = new Date(g('tanggal') + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
@@ -482,7 +522,7 @@
     ].concat(r.rows.map(function (x) { return '• ' + x[0] + (x[1] === null ? '' : ' – ' + fmt(x[1])); }))
       .concat([
         '*Perkiraan biaya:* ' + (r.total ? rp(r.total) + r.per : '-') + (r.konsul ? ' (+ mobil ekstra, harga lewat chat)' : ''),
-        BY && bookAmt ? '*Booking ' + BY.persen + '%:* ' + rp(bookAmt) + ' via ' + (bayarVia === 'qris' ? 'QRIS' : 'transfer ' + (($('input[name=rekBank]:checked') || {}).value || BY.rek[0].bank)) + ' (bukti bayar terlampir)' : null,
+        BY && bookAmt ? '*Booking ' + BY.persen + '%:* ' + rp(bookAmt) + ' via ' + (bayarVia === 'auto' ? 'Midtrans – ' + (mtStatus || 'menunggu') : (bayarVia === 'qris' ? 'QRIS' : 'transfer ' + (($('input[name=rekBank]:checked') || {}).value || BY.rek[0].bank)) + ' (bukti bayar terlampir)') : null,
         BY && bookAmt ? '*Sisa setelah dicek:* ' + rp(r.total - bookAmt) : null,
         BY && !bookAmt ? '*Booking:* menunggu nominal dari admin' : null, '',
         '*Nama:* ' + g('nama'),
