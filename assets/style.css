@@ -291,7 +291,7 @@ label.f i{color:var(--accent-d);font-style:normal}
 .pay-tabs{display:flex;gap:8px;margin-bottom:12px}
 .pay-tab{flex:1;white-space:nowrap;padding:10px;border:2px solid var(--line);border-radius:10px;background:#fff;font:inherit;font-weight:700;color:var(--muted);cursor:pointer}
 .pay-tab.on{border-color:var(--primary);color:var(--primary);background:#eef8fa}
-.pay-pane[hidden],#payBox[hidden],#qrImg[hidden],#qrPh[hidden],#kirimHint[hidden]{display:none}
+.pay-pane[hidden],#btnKirim[hidden],#payBox[hidden],#qrImg[hidden],#qrPh[hidden],#kirimHint[hidden]{display:none}
 .qr-wrap{display:grid;place-items:center;min-height:240px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;padding:8px;background:#fff}
 .qr-wrap img{width:100%;max-width:300px;height:auto}
 #qrSave.off{pointer-events:none;opacity:.5}
