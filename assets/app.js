@@ -457,7 +457,7 @@
       '<div class="row"><span>Total biaya' + (l === 'langganan' ? ' bulan pertama' : '') + '</span><span>' + rp(r.total) + '</span></div>' +
       '<div class="row big"><span>Booking ' + BY.persen + '%</span><b>' + rp(bookAmt) + '</b></div>' +
       '<div class="row"><span>Sisa setelah dicek</span><span>' + rp(r.total - bookAmt) + '</span></div>';
-    var tabs = $$('.pay-tab'); if (!bayarVia || !$('.pay-tab[data-pay="' + bayarVia + '"]')) bayarVia = tabs[0].dataset.pay;
+    var tabs = $$('.pay-tab[data-pay]'); if (!bayarVia || !$('.pay-tab[data-pay="' + bayarVia + '"]')) bayarVia = tabs[0].dataset.pay;
     pilihBayar(bayarVia);
     if (BY.qris) gambarQR(bookAmt);
     if (BY.rek) $('#rekAmt').textContent = rp(bookAmt);
