@@ -587,8 +587,8 @@ for (const p of posts) {
       <label class="f">Jumlah mobil</label>
       <div class="cnt-row">
         <label class="cnt"><input type="radio" name="jml" value="1" checked><span><b>1 Mobil</b><small>&nbsp;</small></span></label>
-        <label class="cnt"><input type="radio" name="jml" value="2"><span><b>2 Mobil</b><small>Diskon 10%</small></span></label>
-        <label class="cnt"><input type="radio" name="jml" value="3"><span><b>3 Mobil</b><small>Diskon 15%</small></span></label>
+        <label class="cnt"><input type="radio" name="jml" value="2"><span><b>2 Mobil</b><small>Hemat Rp5.000</small></span></label>
+        <label class="cnt"><input type="radio" name="jml" value="3"><span><b>3 Mobil</b><small>Hemat Rp10.000</small></span></label>
       </div>
       <p class="hint">Lebih dari 3 mobil? <a href="${waChat}" target="_blank" rel="noopener">Pesan lewat chat WhatsApp</a>.</p>
       <div id="carList"></div><datalist id="dlMerek"></datalist>
