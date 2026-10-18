@@ -544,8 +544,9 @@ for (const p of posts) {
 
 // Form pemesanan → WhatsApp
 {
-  const MT = c.midtrans && c.midtrans.clientKey && c.orderWebhook;
-  const pub = { brand: c.brand, whatsapp: c.whatsapp, area: c.area, jam: c.jamPilihan, harga: H, ukuran: c.ukuran, orderHook: c.orderWebhook || '', midtrans: c.midtrans && c.midtrans.clientKey && c.orderWebhook ? { clientKey: c.midtrans.clientKey, mode: c.midtrans.mode || 'sandbox' } : null, bayar: B.aktif ? { persen: B.persen, qris: B.qris, rek: B.rek } : null };
+  const MT = c.midtrans && c.midtrans.clientKey && c.orderWebhook && c.midtrans.aktif !== false;
+  const MT_OFF = c.midtrans && c.midtrans.aktif === false;
+  const pub = { brand: c.brand, whatsapp: c.whatsapp, area: c.area, jam: c.jamPilihan, harga: H, ukuran: c.ukuran, orderHook: c.orderWebhook || '', midtrans: MT ? { clientKey: c.midtrans.clientKey, mode: c.midtrans.mode || 'sandbox' } : null, bayar: B.aktif ? { persen: B.persen, qris: B.qris, rek: B.rek } : null };
   page({
     file: `${P.pesan}index.html`, cur: P.pesan,
     title: 'Jadwalkan Cuci & Salon Mobil di Rumah',
@@ -612,7 +613,7 @@ ${B.aktif ? `
   <div class="panel" data-p="3">
     <div class="pay-sum" id="paySum"></div>
     <div id="payBox">
-      <div class="pay-tabs" role="tablist">${MT ? '<button type="button" role="tab" class="pay-tab" data-pay="auto">Otomatis</button>' : ''}${B.qris ? '<button type="button" role="tab" class="pay-tab" data-pay="qris">QRIS</button>' : ''}${B.rek ? '<button type="button" role="tab" class="pay-tab" data-pay="transfer">Transfer</button>' : ''}</div>
+      <div class="pay-tabs" role="tablist">${MT ? '<button type="button" role="tab" class="pay-tab" data-pay="auto">Virtual Account</button>' : (MT_OFF ? '<button type="button" class="pay-tab pay-off" disabled aria-disabled="true" title="Segera tersedia">Virtual Account<small>Segera hadir</small></button>' : '')}${B.qris ? '<button type="button" role="tab" class="pay-tab" data-pay="qris">QRIS</button>' : ''}${B.rek ? '<button type="button" role="tab" class="pay-tab" data-pay="transfer">Transfer</button>' : ''}</div>
       ${MT ? `<div class="pay-pane" data-pane="auto">
         <p class="hint mb0">Bayar lewat <b>QRIS</b> (semua e-wallet & m-banking), <b>GoPay</b>, atau <b>Virtual Account</b> bank. Pembayaran langsung terkonfirmasi tanpa perlu kirim bukti.</p>
         <button type="button" class="btn btn-primary btn-block mt12" id="btnMidtrans">Bayar booking <span id="mtAmt"></span></button>
