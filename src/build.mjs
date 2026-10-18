@@ -544,7 +544,7 @@ for (const p of posts) {
 
 // Form pemesanan → WhatsApp
 {
-  const pub = { brand: c.brand, whatsapp: c.whatsapp, area: c.area, jam: c.jamPilihan, harga: H, ukuran: c.ukuran, bayar: B.aktif ? { persen: B.persen, qris: B.qris, rek: B.rek } : null };
+  const pub = { brand: c.brand, whatsapp: c.whatsapp, area: c.area, jam: c.jamPilihan, harga: H, ukuran: c.ukuran, orderHook: c.orderWebhook || '', bayar: B.aktif ? { persen: B.persen, qris: B.qris, rek: B.rek } : null };
   page({
     file: `${P.pesan}index.html`, cur: P.pesan,
     title: 'Jadwalkan Cuci & Salon Mobil di Rumah',
