@@ -43,7 +43,7 @@
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
   var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var HARI = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-  var DISKON = { 1: 0, 2: 10, 3: 15 };
+  var POTONGAN = { 1: 0, 2: 5000, 3: 10000 };
   var step = 1, LAST = S.bayar ? 3 : 2;
   var q = new URLSearchParams(location.search);
 
@@ -199,8 +199,8 @@
         else { var hb = H.banjir.harga[c.ui][+lv]; rows.push([tag(k) + 'Pascabanjir – ' + H.banjir.level[+lv].toLowerCase() + ' (' + ukNama[c.ui] + ')', hb]); total += hb; }
       });
     }
-    var pct = DISKON[n] || 0;
-    if (pct && total) { var dis = Math.round(total * pct / 100 / 1000) * 1000; rows.push(['Diskon ' + n + ' mobil (' + pct + '%)', -dis]); total -= dis; }
+    var pot = Math.min(POTONGAN[n] || 0, total);
+    if (pot) { rows.push(['Potongan ' + n + ' mobil', -pot]); total -= pot; }
     return { rows: rows, total: total, konsul: konsul, per: l === 'langganan' ? '/bulan' : '', cars: C };
   }
   function fmt(v) { return v === null ? 'isi data mobil' : typeof v === 'number' ? (v < 0 ? '−' + rp(-v) : rp(v)) : v; }
