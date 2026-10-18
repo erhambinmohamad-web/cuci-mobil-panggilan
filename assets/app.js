@@ -260,7 +260,7 @@
     $$('.panel').forEach(function (p) { p.classList.toggle('on', +p.dataset.p === n); });
     $$('.stepper li').forEach(function (li) { li.classList.toggle('on', +li.dataset.s <= n); });
     if (n === 2) { renderHari(); renderCars(); }
-    if (n === 3) renderBayar();
+    if (n === 3) { renderBayar(); kirimData(BY && bookAmt ? 'QR tampil' : 'Menunggu nominal admin'); }
     form.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -444,13 +444,40 @@
     if (!validate(2)) return;
     if (BY) go(3); else kirimWA();
   });
+  // Catat pesanan ke Google Sheet admin (tanpa menunggu balasan)
+  var orderId = '';
+  function idPesanan() {
+    if (orderId) return orderId;
+    var t = new Date(), p = function (x) { return ('0' + x).slice(-2); }, cs = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', r = '';
+    for (var i = 0; i < 4; i++) r += cs.charAt(Math.floor(Math.random() * cs.length));
+    return (orderId = 'KK-' + String(t.getFullYear()).slice(2) + p(t.getMonth() + 1) + p(t.getDate()) + '-' + r);
+  }
+  function kirimData(status) {
+    if (!S.orderHook) return;
+    try {
+      var r = calc(), l = layanan(), g = function (id) { var el = $('#' + id); return el ? el.value.trim() : ''; };
+      var data = {
+        k: 'kk1', id: idPesanan(), status: status, nama: g('nama'),
+        layanan: { langganan: 'Langganan Kilap', sekali: 'Cuci Sekali Datang', detailing: 'Salon & Perawatan', banjir: 'Pemulihan Pascabanjir' }[l] || '',
+        rincian: r.rows.map(function (x) { return x[0] + (x[1] === null ? '' : ' – ' + fmt(x[1])); }).join('; '),
+        jml: r.cars.length, mobil: r.cars.map(function (c, i) { return (i + 1) + '. ' + c.label + (c.ui > -1 ? ' (' + ukNama[c.ui] + ')' : ''); }).join('; '),
+        maps: g('maps'), alamat: g('alamat'), tanggal: g('tanggal'), jam: g('jam'), hari: l === 'langganan' ? vals('hari').join(', ') : '',
+        kondisi: g('kondisi'), sumber: g('sumber'), catatan: g('catatan'), promo: g('promo'),
+        total: r.total || '', booking: BY && bookAmt ? bookAmt : '', sisa: BY && bookAmt ? r.total - bookAmt : '',
+        bayar: BY && bookAmt ? (bayarVia === 'qris' ? 'QRIS' : 'Transfer ' + (($('input[name=rekBank]:checked') || {}).value || (BY.rek ? BY.rek[0].bank : ''))) : ''
+      };
+      fetch(S.orderHook, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(data) }).catch(function () {});
+    } catch (e) {}
+  }
   function kirimWA() {
+    kirimData(BY && bookAmt ? 'Klik Sudah bayar' : 'Dikirim ke WA');
     var r = calc(), l = layanan(), g = function (id) { var el = $('#' + id); return el ? el.value.trim() : ''; };
     var namaLayanan = { langganan: 'Langganan Kilap', sekali: 'Cuci Sekali Datang', detailing: 'Salon & Perawatan', banjir: 'Pemulihan Pascabanjir' }[l];
     var tglFmt = new Date(g('tanggal') + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
     var mobil = r.cars.map(function (c, i) { return (r.cars.length > 1 ? (i + 1) + '. ' : '') + c.label + (c.ui > -1 ? ' (' + ukNama[c.ui] + ')' : ''); });
     var lines = [
       '*JADWAL BARU – ' + S.brand.toUpperCase() + '*', '',
+      '*ID pesanan:* ' + idPesanan(),
       '*Layanan:* ' + namaLayanan,
     ].concat(r.rows.map(function (x) { return '• ' + x[0] + (x[1] === null ? '' : ' – ' + fmt(x[1])); }))
       .concat([
